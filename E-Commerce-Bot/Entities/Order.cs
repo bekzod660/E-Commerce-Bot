@@ -7,9 +7,9 @@
         public decimal Latitude { get; set; }
         public string? Address { get; set; }
         public double Price { get; set; }
-        public int UserId { get; set; }
+        public long? UserId { get; set; }
         public User? User { get; set; }
-        public int ItemId { get; set; }
+        public int? ItemId { get; set; }
 
         public virtual ICollection<Item>? Item { get; set; }
     }

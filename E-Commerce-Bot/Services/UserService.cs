@@ -50,6 +50,11 @@ namespace E_Commerce_Bot.Services
             return await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public Task<User> GetByName(string text)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> UpdateAsync(User updatedobject)
         {
             _db.Users.Update(updatedobject);

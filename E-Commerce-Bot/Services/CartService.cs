@@ -1,17 +1,30 @@
 ﻿using E_Commerce_Bot.Entities;
+using E_Commerce_Bot.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce_Bot.Services
 {
     public class CartService : IService<Cart>
     {
-        public Task<bool> AddAsync(Cart newObject)
+        private readonly ILogger<CartService> _logger;
+        private readonly ApplicationDbContext _db;
+
+        public CartService(ApplicationDbContext db, ILogger<CartService> logger)
         {
-            throw new NotImplementedException();
+            _db = db;
+            _logger = logger;
+        }
+        public async Task<bool> AddAsync(Cart newObject)
+        {
+            _db.Carts.Add(newObject);
+            return await _db.SaveChangesAsync() > 0;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var cart = _db.Carts.FirstOrDefault(x => x.Id == id);
+            _db.Carts.Remove(cart);
+            return await _db.SaveChangesAsync() > 0;
         }
 
         public Task<bool> DeleteAsync(long id)
@@ -21,12 +34,12 @@ namespace E_Commerce_Bot.Services
 
         public Task<List<Cart>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return _db.Carts.AsNoTracking().ToListAsync();
         }
 
-        public Task<Cart> GetByIdAsync(int id)
+        public async Task<Cart> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return _db.Carts.FirstOrDefault(x => x.Id == id);
         }
 
         public Task<Cart> GetByIdAsync(long id)
@@ -34,9 +47,15 @@ namespace E_Commerce_Bot.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateAsync(Cart updatedobject)
+        public Task<Cart> GetByName(string text)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> UpdateAsync(Cart updatedobject)
+        {
+            _db.Carts.Update(updatedobject);
+            return await _db.SaveChangesAsync() > 0;
         }
     }
 }

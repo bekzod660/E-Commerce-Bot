@@ -4,6 +4,7 @@
     {
         Task<bool> AddAsync(T newObject);
         Task<bool> UpdateAsync(T updatedobject);
+        Task<T> GetByName(string text);
         Task<T> GetByIdAsync(int id);
         Task<T> GetByIdAsync(long id);
         Task<List<T>> GetAllAsync();

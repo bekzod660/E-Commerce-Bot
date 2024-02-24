@@ -9,7 +9,7 @@ namespace E_Commerce_Bot.Persistence
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Cart> Carts { get; set; }
-        public DbSet<Category> Categorys { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -26,13 +26,16 @@ namespace E_Commerce_Bot.Persistence
                .IsUnique();
 
             modelBuilder.Entity<User>()
-                .HasMany<Order>(x => x.Orders)
+                .HasMany(x => x.Orders)
                 .WithOne(e => e.User)
-                .HasForeignKey(t => t.UserId);
+                .HasForeignKey(e => e.UserId)
+                .IsRequired(false);
 
             modelBuilder.Entity<User>()
-                .HasOne<Cart>(x => x.Cart)
-                .WithOne(y => y.User);
+                .HasOne(x => x.Cart)
+                .WithOne(y => y.User)
+                .HasForeignKey<Cart>(y => y.UserId)
+                .IsRequired(false);
 
             base.OnModelCreating(modelBuilder);
         }

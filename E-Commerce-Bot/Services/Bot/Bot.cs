@@ -15,6 +15,7 @@ namespace E_Commerce_Bot.Services.Bot
             this.updateHandler = updateHandler;
             this.botClient = botClient;
             this.logger = logger;
+            botClient.StartReceiving(new DefaultUpdateHandler(updateHandler.HandleUpdateAsync, updateHandler.HandlePollingErrorAsync));
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -24,12 +25,10 @@ namespace E_Commerce_Bot.Services.Bot
                 var bot = await botClient.GetMeAsync(cancellationToken: cancellationToken);
                 logger.LogInformation("Bot {username} is started", bot.Username);
 
-                botClient.StartReceiving(
-                    updateHandler: updateHandler,
-                    receiverOptions: default,
-                    cancellationToken: cancellationToken);
-
-
+                //botClient.StartReceiving(
+                //    updateHandler: updateHandler,
+                //    receiverOptions: default,
+                //    cancellationToken: cancellationToken);
             }
             catch (Exception ex)
             {

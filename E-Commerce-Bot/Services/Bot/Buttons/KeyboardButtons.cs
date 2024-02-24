@@ -69,9 +69,18 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 KeyboardButton.WithRequestLocation("📍 Lokatsiya jo'natish"))
             { ResizeKeyboard = true };
         }
-        public static IReplyMarkup WhenSelectedPickUp()
+        public static IReplyMarkup WhenSelectedPickUp(List<string> menu)
         {
+            return MakeButtons(menu);
+        }
+        public static IReplyMarkup Menu(List<string> menu)
+        {
+            //var buttons = new List<List<KeyboardButton>>();
+            //if(menu.Count % 2 == 0)
+            //{
 
+            //}
+            return MakeButtons(menu);
         }
         public static IReplyMarkup MakeButtons(List<string> item)
         {
@@ -82,11 +91,18 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                     new List<KeyboardButton>()
                         {
                             new KeyboardButton(item[2*i]),
-                            new KeyboardButton(item[2* +1])
+                            new KeyboardButton(item[2*i +1])
                         }
                     );
             }
-
+            if (item.Count % 2 != 0)
+            {
+                buttons.Add(
+                    new List<KeyboardButton>()
+                    {
+                        new KeyboardButton($"{item.Last()}")
+                    });
+            }
             buttons.Add(
                 new List<KeyboardButton>()
                 {
