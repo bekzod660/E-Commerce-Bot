@@ -45,9 +45,9 @@ namespace E_Commerce_Bot.Services
             throw new NotImplementedException();
         }
 
-        public Task<Category> GetByName(string text)
+        public async Task<Category> GetByNameAsync(string text)
         {
-            throw new NotImplementedException();
+            return _db.Categories.Include(x => x.Products).FirstOrDefault(x => x.Name == text);
         }
 
         public Task<bool> UpdateAsync(Category updatedobject)

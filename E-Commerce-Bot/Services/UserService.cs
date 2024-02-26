@@ -47,10 +47,10 @@ namespace E_Commerce_Bot.Services
 
         public async Task<User> GetByIdAsync(long id)
         {
-            return await _db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await _db.Users.Include(x => x.Cart).Include(y => y.Orders).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<User> GetByName(string text)
+        public Task<User> GetByNameAsync(string text)
         {
             throw new NotImplementedException();
         }

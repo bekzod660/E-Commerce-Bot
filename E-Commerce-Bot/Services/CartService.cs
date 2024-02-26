@@ -47,7 +47,7 @@ namespace E_Commerce_Bot.Services
             throw new NotImplementedException();
         }
 
-        public Task<Cart> GetByName(string text)
+        public Task<Cart> GetByNameAsync(string text)
         {
             throw new NotImplementedException();
         }

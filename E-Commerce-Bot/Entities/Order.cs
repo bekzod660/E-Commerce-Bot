@@ -9,8 +9,7 @@
         public double Price { get; set; }
         public long? UserId { get; set; }
         public User? User { get; set; }
-        public int? ItemId { get; set; }
-
-        public virtual ICollection<Item>? Item { get; set; }
+        public int? Cart { get; set; }
+        public Cart? Carts { get; set; }
     }
 }

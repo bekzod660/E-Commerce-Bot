@@ -44,9 +44,9 @@ namespace E_Commerce_Bot.Services
             throw new NotImplementedException();
         }
 
-        public Task<Product> GetByName(string text)
+        public async Task<Product> GetByNameAsync(string text)
         {
-            throw new NotImplementedException();
+            return _db.Products.FirstOrDefault(x => x.Name == text);
         }
 
         public Task<bool> UpdateAsync(Product updatedobject)

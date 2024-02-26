@@ -50,7 +50,7 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 OneTimeKeyboard = true
             };
         }
-        public static IReplyMarkup WhenOrderSelected()
+        public static IReplyMarkup InSelectOrderType()
         {
             return new ReplyKeyboardMarkup(new[]
             {
@@ -62,16 +62,29 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 OneTimeKeyboard = true
             };
         }
-
-        public static IReplyMarkup WhenSelectedDelivery()
+        public static KeyboardButton BackButton()
         {
-            return new ReplyKeyboardMarkup(
-                KeyboardButton.WithRequestLocation("📍 Lokatsiya jo'natish"))
-            { ResizeKeyboard = true };
+            return new KeyboardButton("<= ortga");
         }
-        public static IReplyMarkup WhenSelectedPickUp(List<string> menu)
+        public static KeyboardButton CartButton()
         {
-            return MakeButtons(menu);
+            return new KeyboardButton("🛒 Savatcha");
+        }
+        public static IReplyMarkup SelectedDeliveryType()
+        {
+            return new ReplyKeyboardMarkup(new[]
+            {
+                   KeyboardButton.WithRequestLocation("📍 Lokatsiya jo'natish"),
+                   BackButton()
+            })
+            {
+                ResizeKeyboard = true,
+                OneTimeKeyboard = true
+            };
+        }
+        public static IReplyMarkup SelectedPickUp(List<string> menu)
+        {
+            return MakeReplyMarkup(menu);
         }
         public static IReplyMarkup Menu(List<string> menu)
         {
@@ -80,21 +93,27 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
             //{
 
             //}
-            return MakeButtons(menu);
+            return MakeReplyMarkup(menu);
         }
-        public static IReplyMarkup MakeButtons(List<string> item)
+        public static List<List<KeyboardButton>> MakeButton(List<string> items)
         {
             var buttons = new List<List<KeyboardButton>>();
-            for (int i = 0; i < item.Count / 2; i++)
+            for (int i = 0; i < items.Count / 2; i++)
             {
                 buttons.Add(
                     new List<KeyboardButton>()
                         {
-                            new KeyboardButton(item[2*i]),
-                            new KeyboardButton(item[2*i +1])
+                            new KeyboardButton(items[2*i]),
+                            new KeyboardButton(items[2*i +1])
                         }
                     );
             }
+            return buttons;
+        }
+        public static IReplyMarkup MakeReplyMarkup(List<string> item)
+        {
+
+            var buttons = MakeButton(item);
             if (item.Count % 2 != 0)
             {
                 buttons.Add(
@@ -106,8 +125,8 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
             buttons.Add(
                 new List<KeyboardButton>()
                 {
-                    new KeyboardButton("🛒 Savatcha"),
-                    new KeyboardButton("↪️ Orqaga")
+                    CartButton(),
+                    BackButton()
                 });
             return new ReplyKeyboardMarkup(buttons)
             {
@@ -115,6 +134,35 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 OneTimeKeyboard = true
             };
         }
+        public static IReplyMarkup SelectAmountBtn()
+        {
+            return new ReplyKeyboardMarkup(new[]
+            {
+                new KeyboardButton[]{"1", "2", "3"},
+                new KeyboardButton[]{"4", "5", "6"},
+                new KeyboardButton[]{"7", "8", "9"},
+                new KeyboardButton[]{"🛒 Savatcha","↪️ Orqaga" }
+            });
+        }
+        public static IReplyMarkup Cart(List<string> items)
+        {
+            var buttons = new List<List<KeyboardButton>>();
+            for (int i = 0; i < items.Count / 2; i++)
+            {
+                buttons.Add(new List<KeyboardButton>()
+                {
+                    new KeyboardButton(items[2*i]),
+                    new KeyboardButton(items[2*i +1])
+                });
+            }
 
+            buttons.Add(new List<KeyboardButton>()
+                {
+                    new KeyboardButton("<= ortga"),
+                    new KeyboardButton("Tozalash"),
+                    new KeyboardButton("Buyurtma Berish")
+                });
+            return new ReplyKeyboardMarkup(buttons);
+        }
     }
 }

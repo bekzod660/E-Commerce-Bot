@@ -6,6 +6,10 @@
         SendingLocation,
         EnteringAddress,
         EnteringFullName,
-        SendingContact
+        SendingContact,
+        InSelectDeliveryType,
+        InDelivery,
+        InPickUp,
+        InSelectAmount
     }
 }
