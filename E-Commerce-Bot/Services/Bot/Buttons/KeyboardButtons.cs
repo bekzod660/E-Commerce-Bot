@@ -40,7 +40,10 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 new KeyboardButton[]
                 {
                     new KeyboardButton("✍️ Fikr bildirish"),
-                    new KeyboardButton("ℹ️ Ma'lumot"),
+                    new KeyboardButton("ℹ️ Ma'lumot")
+                },
+                new KeyboardButton[]
+                {
                     new KeyboardButton("☎️ Biz bilan aloqa"),
                     new KeyboardButton("⚙️ Sozlamalar")
                 }
@@ -55,7 +58,9 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
             return new ReplyKeyboardMarkup(new[]
             {
                 new KeyboardButton("🚖 Yetkazib berish"),
-                new KeyboardButton("🏃 Olib ketish")
+                new KeyboardButton("🏃 Olib ketish"),
+                BackButton()
+
             })
             {
                 ResizeKeyboard = true,
@@ -64,7 +69,7 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
         }
         public static KeyboardButton BackButton()
         {
-            return new KeyboardButton("<= ortga");
+            return new KeyboardButton("⬅️ Ortga");
         }
         public static KeyboardButton CartButton()
         {
@@ -141,7 +146,7 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 new KeyboardButton[]{"1", "2", "3"},
                 new KeyboardButton[]{"4", "5", "6"},
                 new KeyboardButton[]{"7", "8", "9"},
-                new KeyboardButton[]{"🛒 Savatcha","↪️ Orqaga" }
+                new KeyboardButton[]{CartButton(),BackButton() }
             });
         }
         public static IReplyMarkup Cart(List<string> items)

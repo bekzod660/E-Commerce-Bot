@@ -34,9 +34,9 @@ namespace E_Commerce_Bot.Services
             throw new NotImplementedException();
         }
 
-        public Task<Product> GetByIdAsync(int id)
+        public async Task<Product> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return _db.Products.FirstOrDefault(x => x.Id == id);
         }
 
         public Task<Product> GetByIdAsync(long id)

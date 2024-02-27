@@ -6,6 +6,6 @@
         public int Count { get; set; }
         public int? ProductId { get; set; }
         public Product? Product { get; set; }
-        public virtual ICollection<Cart>? Carts { get; set; }
+        public Cart? Carts { get; set; }
     }
 }

@@ -3,13 +3,15 @@
     public enum Process
     {
         None,
-        SendingLocation,
-        EnteringAddress,
-        EnteringFullName,
-        SendingContact,
-        InSelectDeliveryType,
+        LocationRequest,
+        AddressRequest,
+        FullNameRequest,
+        ContactRequest,
+        InCategory,
+        DeliveryTypeRequest,
         InDelivery,
         InPickUp,
-        InSelectAmount
+        AmountRequest,
+        InProduct
     }
 }

@@ -13,5 +13,7 @@ namespace E_Commerce_Bot.Entities
         public int? CartId { get; set; }
         public Cart? Cart { get; set; }
         public virtual ICollection<Order>? Orders { get; set; }
+        public int? ProcessHelperId { get; set; }
+        public ProcessHelper? ProcessHelper { get; set; } = new ProcessHelper();
     }
 }

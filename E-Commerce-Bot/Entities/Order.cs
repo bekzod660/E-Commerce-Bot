@@ -7,6 +7,7 @@
         public decimal Latitude { get; set; }
         public string? Address { get; set; }
         public double Price { get; set; }
+        public OrderType OrderType { get; set; }
         public long? UserId { get; set; }
         public User? User { get; set; }
         public int? Cart { get; set; }

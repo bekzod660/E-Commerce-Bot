@@ -3,6 +3,7 @@ using System;
 using E_Commerce_Bot.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace E_Commerce_Bot.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240227054614_Init1")]
+    partial class Init1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,19 +136,13 @@ namespace E_Commerce_Bot.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("integer");
-
-                    b.Property<double?>("Latitude")
+                    b.Property<double>("Latitude")
                         .HasColumnType("double precision");
 
-                    b.Property<double?>("Longitute")
+                    b.Property<double>("Longitute")
                         .HasColumnType("double precision");
 
-                    b.Property<int?>("Order")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
                     b.Property<long?>("UserId")
@@ -156,7 +153,7 @@ namespace E_Commerce_Bot.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("ProcessHelpers");
+                    b.ToTable("ProcessHelper");
                 });
 
             modelBuilder.Entity("E_Commerce_Bot.Entities.Product", b =>
@@ -231,8 +228,7 @@ namespace E_Commerce_Bot.Migrations
                 {
                     b.HasOne("E_Commerce_Bot.Entities.User", "User")
                         .WithOne("Cart")
-                        .HasForeignKey("E_Commerce_Bot.Entities.Cart", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("E_Commerce_Bot.Entities.Cart", "UserId");
 
                     b.Navigation("User");
                 });
@@ -260,8 +256,7 @@ namespace E_Commerce_Bot.Migrations
 
                     b.HasOne("E_Commerce_Bot.Entities.User", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Carts");
 
@@ -272,8 +267,7 @@ namespace E_Commerce_Bot.Migrations
                 {
                     b.HasOne("E_Commerce_Bot.Entities.User", "User")
                         .WithOne("ProcessHelper")
-                        .HasForeignKey("E_Commerce_Bot.Entities.ProcessHelper", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("E_Commerce_Bot.Entities.ProcessHelper", "UserId");
 
                     b.Navigation("User");
                 });

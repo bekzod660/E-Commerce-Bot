@@ -47,7 +47,12 @@ namespace E_Commerce_Bot.Services
 
         public async Task<User> GetByIdAsync(long id)
         {
-            return await _db.Users.Include(x => x.Cart).Include(y => y.Orders).FirstOrDefaultAsync(x => x.Id == id);
+            return await _db.Users.Include(x => x.Cart)
+                .ThenInclude(x => x.Items)
+                .Include(y => y.Orders)
+                .Include(t => t.ProcessHelper)
+                .Include(t => t.ProcessHelper)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public Task<User> GetByNameAsync(string text)

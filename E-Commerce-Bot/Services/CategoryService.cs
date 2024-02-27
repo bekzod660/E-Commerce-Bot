@@ -35,9 +35,10 @@ namespace E_Commerce_Bot.Services
             return _db.Categories.AsNoTracking().ToListAsync();
         }
 
-        public Task<Category> GetByIdAsync(int id)
+        public async Task<Category> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _db.Categories.Include(x => x.Products)
+                .FirstOrDefaultAsync(y => y.Id == id);
         }
 
         public Task<Category> GetByIdAsync(long id)
