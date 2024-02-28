@@ -53,7 +53,7 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 OneTimeKeyboard = true
             };
         }
-        public static IReplyMarkup InSelectOrderType()
+        public static IReplyMarkup SelectOrderType()
         {
             return new ReplyKeyboardMarkup(new[]
             {
@@ -74,18 +74,6 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
         public static KeyboardButton CartButton()
         {
             return new KeyboardButton("🛒 Savatcha");
-        }
-        public static IReplyMarkup SelectedDeliveryType()
-        {
-            return new ReplyKeyboardMarkup(new[]
-            {
-                   KeyboardButton.WithRequestLocation("📍 Lokatsiya jo'natish"),
-                   BackButton()
-            })
-            {
-                ResizeKeyboard = true,
-                OneTimeKeyboard = true
-            };
         }
         public static IReplyMarkup SelectedPickUp(List<string> menu)
         {
@@ -148,6 +136,69 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 new KeyboardButton[]{"7", "8", "9"},
                 new KeyboardButton[]{CartButton(),BackButton() }
             });
+        }
+        public static IReplyMarkup DeleteOrRemoveCart(IEnumerable<string> products)
+        {
+            var buttons = new List<List<KeyboardButton>>();
+            foreach (var product in products)
+            {
+                buttons.Add(
+                    new List<KeyboardButton>()
+                        {
+                            new KeyboardButton($"❌{product}")
+                        });
+            }
+            buttons.Add(
+                new List<KeyboardButton>()
+                {
+                            new KeyboardButton("⬅️ Ortga"),
+                            new KeyboardButton("🔄 Tozalash")
+                 });
+            buttons.Add(
+                new List<KeyboardButton>()
+                {
+                            new KeyboardButton("🚖 Buyurtuma berish")
+                 });
+            return new ReplyKeyboardMarkup(buttons)
+            {
+                ResizeKeyboard = true,
+                OneTimeKeyboard = true,
+            };
+        }
+        public static IReplyMarkup OnCommentBooking()
+        {
+            return new ReplyKeyboardMarkup(new[]
+            {
+                new KeyboardButton[]{"Qo'shimcha fikr yoq"},
+                new KeyboardButton[]{"⬅️ Ortga","⬅️ Menyu"},
+
+            });
+        }
+        public static IReplyMarkup OnSelectPaymentType()
+        {
+            //var f = "Click orqali to'lash\r\nTo'lov qiymati: 360000 so'm.\r\nTo'lovni amalga oshirish uchun \"✅ To'lash\" tugmasini bosing.\r\n\r\nFish and Bread Bot, [2/28/2024 3:15 PM]\r\nSizning buyurtmangiz qabul qilindi. Iltimos to'lovni amalga oshiring!"
+            //var t = "https://my.click.uz/services/pay?service_id=19225&merchant_id=7531&amount=360000&transaction_param=1084927&return_url=https://t.me/BeshqozonBot"
+            return new ReplyKeyboardMarkup(new[]
+        {
+                new KeyboardButton[]{"💵 Naqd pul"},
+                new KeyboardButton[]{"💳 Payme","💳 Click" },
+                 new KeyboardButton[]{"⬅️ Ortga","⬅️ Menyu"},
+
+            });
+        }
+        public static IReplyMarkup AfterSelectPaymentType()
+        {
+            return new ReplyKeyboardMarkup(new[]
+            {
+                new KeyboardButton[]{"✅ Tasdiqlash"},
+                new KeyboardButton[]{"❌ Bekor qilish" },
+
+            });
+        }
+        public static IReplyMarkup AfterConfirmOrder()
+        {
+            return new InlineKeyboardMarkup(
+                InlineKeyboardButton.WithPayment("✅ To'lash"));
         }
         public static IReplyMarkup Cart(List<string> items)
         {

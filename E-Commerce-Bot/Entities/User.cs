@@ -15,5 +15,6 @@ namespace E_Commerce_Bot.Entities
         public virtual ICollection<Order>? Orders { get; set; }
         public int? ProcessHelperId { get; set; }
         public ProcessHelper? ProcessHelper { get; set; } = new ProcessHelper();
+
     }
 }

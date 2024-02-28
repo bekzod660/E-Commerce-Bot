@@ -3,6 +3,7 @@
     public enum Process
     {
         None,
+        MainMenu,
         LocationRequest,
         AddressRequest,
         FullNameRequest,
@@ -12,6 +13,11 @@
         InDelivery,
         InPickUp,
         AmountRequest,
-        InProduct
+        InProduct,
+        InCart,
+        OnCommentOrder,
+        OnSelectPaymentType,
+        AfterSelectPaymentType,
+        AtConfirmationOrder
     }
 }

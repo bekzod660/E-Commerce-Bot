@@ -49,6 +49,7 @@ namespace E_Commerce_Bot.Services
         {
             return await _db.Users.Include(x => x.Cart)
                 .ThenInclude(x => x.Items)
+                .ThenInclude(x => x.Product)
                 .Include(y => y.Orders)
                 .Include(t => t.ProcessHelper)
                 .Include(t => t.ProcessHelper)

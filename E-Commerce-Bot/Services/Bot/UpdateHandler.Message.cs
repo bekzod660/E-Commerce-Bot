@@ -1,5 +1,6 @@
 ﻿using E_Commerce_Bot.Entities;
 using E_Commerce_Bot.Services.Bot.Buttons;
+using System.Text;
 using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -28,7 +29,7 @@ namespace E_Commerce_Bot.Services.Bot
                 "Salom\n\nIltimos ismingizni kiriting:",
                parseMode: ParseMode.Html);
             }
-            else if (user is not null)
+            else if (user is User)
             {
                 if (user.UserProcess == Entities.Process.FullNameRequest)
                 {
@@ -70,14 +71,73 @@ namespace E_Commerce_Bot.Services.Bot
                         replyMarkup: KeyboardButtons.MainMenu()
                     );
                 }
+                else if (message.Text == "🛒 Savatcha")
+                {
+                    await botClient.SendTextMessageAsync(
+                        message.Chat.Id,
+                        "*«❌ Maxsulot nomi»* - savatdan o'chirish \r\n *«🔄 Tozalash»* - savatni butunlay bo'shatish");
+                    var products = new StringBuilder("📥 Savat:");
+                    foreach (var item in user.Cart.Items)
+                    {
+                        products = products.Append($"\n{item.Product.Name}\n {item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
+                    }
+                    double totalPrice = user.Cart.Items.Select(x => x.Product.Price * x.Count).ToList().Sum();
+                    user.UserProcess = Process.InCart;
+                    await _userService.UpdateAsync(user);
+                    products = products.Append($"\nJami:{totalPrice}");
+                    await botClient.SendTextMessageAsync(
+                        message.Chat.Id,
+                        $"{products}",
+                        replyMarkup: KeyboardButtons.DeleteOrRemoveCart(user.Cart.Items.Select(x => x.Product.Name)));
+                }
+                else if (message.Text == "⬅️ Ortga")
+                {
+                    string action = user.UserProcess.ToString();
+                    if (action == "InCategory")
+                    {
+                        await botClient.SendTextMessageAsync(message.Chat.Id, "Buyurtmani o'zingiz olib keting, yoki Yetkazib berishni tanlang", replyMarkup: KeyboardButtons.SelectOrderType());
+                        user.UserProcess = Process.DeliveryTypeRequest;
+                        await _userService.UpdateAsync(user);
+                    }
+                    else if (action == "InProduct")
+                    {
+                        var categories = await _categoryService.GetAllAsync();
+                        await botClient.SendTextMessageAsync(message.Chat.Id, "Nimadan boshlaymiz?", replyMarkup: KeyboardButtons.MakeReplyMarkup(
+                            categories.Select(x => x.Name).ToList()));
+                        user.UserProcess = Process.InCategory;
+                        await _userService.UpdateAsync(user);
+                    }
+                    else if (action == "InCart")
+                    {
+                        var categories = await _categoryService.GetAllAsync();
+                        await botClient.SendTextMessageAsync(message.Chat.Id, "Nimadan boshlaymiz?", replyMarkup: KeyboardButtons.MakeReplyMarkup(
+                            categories.Select(x => x.Name).ToList()));
+                        user.UserProcess = Process.InCategory;
+                        await _userService.UpdateAsync(user);
+                    }
+                    else if (action == "AmountRequest")
+                    {
+                        int c = (int)user.ProcessHelper.CategoryId;
+                        var categories = await _categoryService.GetByIdAsync(c);
+                        await botClient.SendTextMessageAsync(message.Chat.Id, "Menyu bilan tanishish uchun «⏬ Ruyxat» ni bosing yoki taomni tanlang", replyMarkup: KeyboardButtons.MakeReplyMarkup(
+                            categories.Products.Select(x => x.Name).ToList()));
+                        user.UserProcess = Process.InProduct;
+                        await _userService.UpdateAsync(user);
+                    }
+                    else
+                    {
+                        await botClient.SendTextMessageAsync(message.Chat.Id, "Juda yaxshi birgalikda buyurtma beramizmi? 😃", replyMarkup: KeyboardButtons.MainMenu());
+                    }
+                }
                 else if (message.Text == "🛍 Buyurtma berish")
                 {
                     user.UserProcess = Process.DeliveryTypeRequest;
+                    user.Cart = null;
                     await _userService.UpdateAsync(user);
                     await botClient.SendTextMessageAsync(
                         message.Chat.Id,
                         "Buyurtmani o'zingiz olib keting, yoki Yetkazib berishni tanlang",
-                        replyMarkup: KeyboardButtons.InSelectOrderType());
+                        replyMarkup: KeyboardButtons.SelectOrderType());
                 }
                 else if (message.Text == "⚙️ Sozlamalar")
                 {
@@ -106,31 +166,6 @@ namespace E_Commerce_Bot.Services.Bot
                         replyMarkup: KeyboardButtons.MakeReplyMarkup(categories.Select(x => x.Name).ToList())
                         );
                 }
-                else if (message.Text == "⬅️ Ortga")
-                {
-                    string action = user.UserProcess.ToString();
-                    if (action == "InCategory")
-                    {
-                        await botClient.SendTextMessageAsync(message.Chat.Id, "Buyurtmani o'zingiz olib keting, yoki Yetkazib berishni tanlang", replyMarkup: KeyboardButtons.SelectedDeliveryType());
-                    }
-                    else if (action == "InProduct")
-                    {
-                        var categories = await _categoryService.GetAllAsync();
-                        await botClient.SendTextMessageAsync(message.Chat.Id, "Nimadan boshlaymiz?", replyMarkup: KeyboardButtons.MakeReplyMarkup(
-                            categories.Select(x => x.Name).ToList()));
-                    }
-                    else if (action == "AmountRequest")
-                    {
-                        int c = (int)user.ProcessHelper.CategoryId;
-                        var categories = await _categoryService.GetByIdAsync(c);
-                        await botClient.SendTextMessageAsync(message.Chat.Id, "Menyu bilan tanishish uchun «⏬ Ruyxat» ni bosing yoki taomni tanlang", replyMarkup: KeyboardButtons.MakeReplyMarkup(
-                            categories.Products.Select(x => x.Name).ToList()));
-                    }
-                    else
-                    {
-                        await botClient.SendTextMessageAsync(message.Chat.Id, "Juda yaxshi birgalikda buyurtma beramizmi? 😃", replyMarkup: KeyboardButtons.MainMenu());
-                    }
-                }
                 else if (message.Text == "ℹ️ Ma'lumot")
                 {
                     var categories = await _categoryService.GetAllAsync();
@@ -139,6 +174,35 @@ namespace E_Commerce_Bot.Services.Bot
                         "Menyu",
                         replyMarkup: KeyboardButtons.MakeReplyMarkup(categories.Select(x => x.Name).ToList())
                         );
+                }
+                else if (message.Text == "🚖 Buyurtuma berish")
+                {
+                    user.UserProcess = Process.OnCommentOrder;
+                    if (user.Orders is null)
+                    {
+                        user.Orders = new List<Order>();
+                    }
+                    double totalPrice = user.Cart.Items.Select(x => x.Product.Price * x.Count).ToList().Sum();
+                    user.Orders.Add(
+                        new Order()
+                        {
+                            Longitute = (double)user.ProcessHelper.Longitute,
+                            Latitude = (double)user.ProcessHelper.Latitude,
+                            Price = totalPrice,
+                            OrderType = OrderType.Delivery,
+                            User = user,
+                            UserId = user.Id
+
+                        });
+                    await _userService.UpdateAsync(user);
+                }
+                else if (message.Text == "✅ Tasdiqlash")
+                {
+
+                }
+                else if (message.Text == "❌ Bekor qilish")
+                {
+
                 }
                 else if (message.Text == "🚖 Yetkazib berish" &&
                     user.UserProcess == Process.DeliveryTypeRequest)
@@ -174,7 +238,7 @@ namespace E_Commerce_Bot.Services.Bot
                     var category = await _categoryService.GetByNameAsync(message.Text);
                     await botClient.SendTextMessageAsync(
                         message.Chat.Id,
-                        "Menyu",
+                        "Menyu bilan tanishish uchun «⏬ Ruyxat» ni bosing yoki taomni tanlang",
                         replyMarkup: KeyboardButtons.MakeReplyMarkup(category.Products.Select(x => x.Name).ToList())
                         );
                     user.UserProcess = Process.InProduct;
@@ -192,7 +256,10 @@ namespace E_Commerce_Bot.Services.Bot
                         photo: InputFile.FromUri("https://scontent.fbhk1-3.fna.fbcdn.net/v/t1.6435-9/101732775_3166364486746355_5046697266992119808_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=c2f564&_nc_ohc=X8LV8qIcS1UAX9h5lVm&_nc_ht=scontent.fbhk1-3.fna&oh=00_AfCtHJrBx1U0UT87jgGl-8_1kDW5MncNESKhdyHmBgMD9Q&oe=6602D164"),
                         caption: $"{product.Name}({product.Description})\nNarxi: {product.Price}"
                         );
-                    await SelectAmountButton(botClient, message);
+                    await botClient.SendTextMessageAsync(
+                        message.Chat.Id,
+                        "Miqdorini tanlang yoki kiriting:",
+                        replyMarkup: KeyboardButtons.SelectAmountBtn());
                 }
                 else if (user.UserProcess == Process.AmountRequest &&
                     int.TryParse(message.Text, out int amount))
@@ -206,13 +273,20 @@ namespace E_Commerce_Bot.Services.Bot
                     {
                         user.Cart.Items = new List<Item>();
                     }
-                    user.Cart.Items.Add(new Item()
+                    Item item = user.Cart.Items.First(x => x.Product.Id == product.Id);
+                    if (item != null)
                     {
-                        Product = product,
-                        ProductId = product.Id,
-                        Count = amount
-
-                    });
+                        user.Cart.Items.First(x => x.Product.Id == product.Id).Count = amount;
+                    }
+                    else
+                    {
+                        user.Cart.Items.Add(new Item()
+                        {
+                            Product = product,
+                            ProductId = product.Id,
+                            Count = amount
+                        });
+                    }
 
                     var categories = await _categoryService.GetAllAsync();
                     await botClient.SendTextMessageAsync(
@@ -221,17 +295,6 @@ namespace E_Commerce_Bot.Services.Bot
                         replyMarkup: KeyboardButtons.MakeReplyMarkup(categories.Select(x => x.Name).ToList()));
                     user.UserProcess = Process.InCategory;
                     await _userService.UpdateAsync(user);
-                }
-                else if (message.Text == "🛒 Savatcha")
-                {
-                    string products = "";
-                    foreach (var item in user.Cart.Items)
-                    {
-                        products = products + $"{item.Product.Name}\n";
-                    }
-                    await botClient.SendTextMessageAsync(
-                        message.Chat.Id,
-                        $"{products}");
                 }
                 else if (message.Text != null)
                 {
