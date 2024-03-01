@@ -47,7 +47,7 @@ namespace E_Commerce_Bot.Services
 
         public async Task<User> GetByIdAsync(long id)
         {
-            return await _db.Users.Include(x => x.Cart)
+            return await _db.Users.Include(x => x.Basket)
                 .ThenInclude(x => x.Items)
                 .ThenInclude(x => x.Product)
                 .Include(y => y.Orders)

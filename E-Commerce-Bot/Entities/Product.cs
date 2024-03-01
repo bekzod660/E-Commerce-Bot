@@ -7,8 +7,9 @@
         public string Description { get; set; }
         public double Price { get; set; }
         public string ImagePath { get; set; }
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public virtual Category? Category { get; set; }
         public virtual ICollection<Item>? Items { get; set; }
+        public virtual ICollection<Order>? Orders { get; set; }
     }
 }

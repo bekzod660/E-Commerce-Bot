@@ -2,22 +2,21 @@
 {
     public enum Process
     {
-        None,
+        GoFullNameRequest,
+        GoContactRequest,
+        GoAddressRequest,
         MainMenu,
-        LocationRequest,
-        AddressRequest,
-        FullNameRequest,
-        ContactRequest,
-        InCategory,
         DeliveryTypeRequest,
+        LocationRequest,
+        InCategory,
         InDelivery,
         InPickUp,
         AmountRequest,
         InProduct,
-        InCart,
+        InBasket,
         OnCommentOrder,
         OnSelectPaymentType,
-        AfterSelectPaymentType,
-        AtConfirmationOrder
+        AtConfirmationOrder,
+        InPaymentProcess
     }
 }

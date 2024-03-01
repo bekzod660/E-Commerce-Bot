@@ -57,10 +57,8 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
         {
             return new ReplyKeyboardMarkup(new[]
             {
-                new KeyboardButton("🚖 Yetkazib berish"),
-                new KeyboardButton("🏃 Olib ketish"),
-                BackButton()
-
+                new KeyboardButton[]{"🚖 Yetkazib berish","🏃 Olib ketish" },
+                new KeyboardButton[]{ BackButton() }
             })
             {
                 ResizeKeyboard = true,
@@ -71,23 +69,27 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
         {
             return new KeyboardButton("⬅️ Ortga");
         }
-        public static KeyboardButton CartButton()
+        public static KeyboardButton BasketButton()
         {
             return new KeyboardButton("🛒 Savatcha");
         }
-        public static IReplyMarkup SelectedPickUp(List<string> menu)
+        public static KeyboardButton PlaceAnOrderButton()
         {
-            return MakeReplyMarkup(menu);
+            return new KeyboardButton("🚖 Buyurtuma berish");
         }
-        public static IReplyMarkup Menu(List<string> menu)
-        {
-            //var buttons = new List<List<KeyboardButton>>();
-            //if(menu.Count % 2 == 0)
-            //{
+        //public static IReplyMarkup SelectedPickUp(List<string> menu)
+        //{
+        //    return MakeReplyMarkup(menu);
+        //}
+        //public static IReplyMarkup Menu(List<string> menu)
+        //{
+        //    //var buttons = new List<List<KeyboardButton>>();
+        //    //if(menu.Count % 2 == 0)
+        //    //{
 
-            //}
-            return MakeReplyMarkup(menu);
-        }
+        //    //}
+        //    return MakeReplyMarkup(menu);
+        //}
         public static List<List<KeyboardButton>> MakeButton(List<string> items)
         {
             var buttons = new List<List<KeyboardButton>>();
@@ -103,7 +105,7 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
             }
             return buttons;
         }
-        public static IReplyMarkup MakeReplyMarkup(List<string> item)
+        public static IReplyMarkup MakeReplyMarkup(List<string> item, List<KeyboardButton>? btns)
         {
 
             var buttons = MakeButton(item);
@@ -115,16 +117,24 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                         new KeyboardButton($"{item.Last()}")
                     });
             }
-            buttons.Add(
-                new List<KeyboardButton>()
+            if (btns.Count > 0)
+            {
+                buttons.Insert(0,
+                        new List<KeyboardButton>()
+                        {
+                            btns[0],
+                            btns[1]
+                        });
+                buttons.Add(new List<KeyboardButton>()
                 {
-                    CartButton(),
-                    BackButton()
+                    btns.Last(),
                 });
+            }
             return new ReplyKeyboardMarkup(buttons)
             {
                 ResizeKeyboard = true,
-                OneTimeKeyboard = true
+                OneTimeKeyboard = true,
+                InputFieldPlaceholder = "s"
             };
         }
         public static IReplyMarkup SelectAmountBtn()
@@ -134,10 +144,10 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 new KeyboardButton[]{"1", "2", "3"},
                 new KeyboardButton[]{"4", "5", "6"},
                 new KeyboardButton[]{"7", "8", "9"},
-                new KeyboardButton[]{CartButton(),BackButton() }
+                new KeyboardButton[]{BasketButton(),BackButton() }
             });
         }
-        public static IReplyMarkup DeleteOrRemoveCart(IEnumerable<string> products)
+        public static IReplyMarkup DeleteOrRemoveBasket(IEnumerable<string> products)
         {
             var buttons = new List<List<KeyboardButton>>();
             foreach (var product in products)
@@ -145,7 +155,7 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 buttons.Add(
                     new List<KeyboardButton>()
                         {
-                            new KeyboardButton($"❌{product}")
+                            new KeyboardButton($"❌ {product}")
                         });
             }
             buttons.Add(
@@ -170,9 +180,13 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
             return new ReplyKeyboardMarkup(new[]
             {
                 new KeyboardButton[]{"Qo'shimcha fikr yoq"},
-                new KeyboardButton[]{"⬅️ Ortga","⬅️ Menyu"},
+                new KeyboardButton[]{"⬅️ Ortga"},
 
-            });
+            })
+            {
+                ResizeKeyboard = true,
+                OneTimeKeyboard = true
+            };
         }
         public static IReplyMarkup OnSelectPaymentType()
         {
@@ -184,7 +198,11 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 new KeyboardButton[]{"💳 Payme","💳 Click" },
                  new KeyboardButton[]{"⬅️ Ortga","⬅️ Menyu"},
 
-            });
+            })
+            {
+                ResizeKeyboard = true,
+                OneTimeKeyboard = true
+            };
         }
         public static IReplyMarkup AfterSelectPaymentType()
         {
@@ -193,14 +211,18 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 new KeyboardButton[]{"✅ Tasdiqlash"},
                 new KeyboardButton[]{"❌ Bekor qilish" },
 
-            });
+            })
+            {
+                ResizeKeyboard = true,
+                OneTimeKeyboard = true
+            };
         }
         public static IReplyMarkup AfterConfirmOrder()
         {
             return new InlineKeyboardMarkup(
                 InlineKeyboardButton.WithPayment("✅ To'lash"));
         }
-        public static IReplyMarkup Cart(List<string> items)
+        public static IReplyMarkup Basket(List<string> items)
         {
             var buttons = new List<List<KeyboardButton>>();
             for (int i = 0; i < items.Count / 2; i++)

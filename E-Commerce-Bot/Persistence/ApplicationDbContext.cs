@@ -8,7 +8,7 @@ namespace E_Commerce_Bot.Persistence
         public DbSet<User> Users { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Cart> Carts { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProcessHelper> ProcessHelpers { get; set; }
 
@@ -34,17 +34,19 @@ namespace E_Commerce_Bot.Persistence
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>()
-                .HasOne(x => x.Cart)
+                .HasOne(x => x.Basket)
                 .WithOne(y => y.User)
-                .HasForeignKey<Cart>(y => y.UserId)
+                .HasForeignKey<Basket>(y => y.UserId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<User>()
                 .HasOne(x => x.ProcessHelper)
                 .WithOne(y => y.User)
                 .HasForeignKey<ProcessHelper>(y => y.UserId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
+
 
             base.OnModelCreating(modelBuilder);
         }

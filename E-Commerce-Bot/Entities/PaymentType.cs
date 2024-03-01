@@ -4,6 +4,6 @@
     {
         Click,
         Payme,
-        Naqd
+        Cash
     }
 }

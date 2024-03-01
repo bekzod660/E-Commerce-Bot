@@ -4,26 +4,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce_Bot.Services
 {
-    public class CartService : IService<Cart>
+    public class BasketService : IService<Basket>
     {
-        private readonly ILogger<CartService> _logger;
+        private readonly ILogger<BasketService> _logger;
         private readonly ApplicationDbContext _db;
 
-        public CartService(ApplicationDbContext db, ILogger<CartService> logger)
+        public BasketService(ApplicationDbContext db, ILogger<BasketService> logger)
         {
             _db = db;
             _logger = logger;
         }
-        public async Task<bool> AddAsync(Cart newObject)
+        public async Task<bool> AddAsync(Basket newObject)
         {
-            _db.Carts.Add(newObject);
+            _db.Baskets.Add(newObject);
             return await _db.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var cart = _db.Carts.FirstOrDefault(x => x.Id == id);
-            _db.Carts.Remove(cart);
+            var Basket = _db.Baskets.FirstOrDefault(x => x.Id == id);
+            _db.Baskets.Remove(Basket);
             return await _db.SaveChangesAsync() > 0;
         }
 
@@ -32,29 +32,29 @@ namespace E_Commerce_Bot.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<Cart>> GetAllAsync()
+        public Task<List<Basket>> GetAllAsync()
         {
-            return _db.Carts.AsNoTracking().ToListAsync();
+            return _db.Baskets.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Cart> GetByIdAsync(int id)
+        public async Task<Basket> GetByIdAsync(int id)
         {
-            return _db.Carts.FirstOrDefault(x => x.Id == id);
+            return _db.Baskets.FirstOrDefault(x => x.Id == id);
         }
 
-        public Task<Cart> GetByIdAsync(long id)
+        public Task<Basket> GetByIdAsync(long id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Cart> GetByNameAsync(string text)
+        public Task<Basket> GetByNameAsync(string text)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> UpdateAsync(Cart updatedobject)
+        public async Task<bool> UpdateAsync(Basket updatedobject)
         {
-            _db.Carts.Update(updatedobject);
+            _db.Baskets.Update(updatedobject);
             return await _db.SaveChangesAsync() > 0;
         }
     }

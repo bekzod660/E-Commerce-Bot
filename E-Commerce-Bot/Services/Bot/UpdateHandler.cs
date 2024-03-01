@@ -12,11 +12,11 @@ namespace E_Commerce_Bot.Services.Bot
         private readonly ProductService _productService;
         private readonly OrderService _orderService;
         private readonly CategoryService _categoryService;
-        private readonly CartService _cartService;
+        private readonly BasketService _BasketService;
 
-        public UpdateHandler(CartService cartService, CategoryService categoryService, OrderService orderService, ProductService productService, UserService userService, ILogger<UpdateHandler> logger)
+        public UpdateHandler(BasketService BasketService, CategoryService categoryService, OrderService orderService, ProductService productService, UserService userService, ILogger<UpdateHandler> logger)
         {
-            _cartService = cartService;
+            _BasketService = BasketService;
             _categoryService = categoryService;
             _orderService = orderService;
             _productService = productService;

@@ -30,12 +30,13 @@ namespace E_Commerce_Bot
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection"));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection"),
+                    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             }, ServiceLifetime.Singleton);
             builder.Services.AddTransient<IUpdateHandler, UpdateHandler>();
             builder.Services.AddTransient<OrderService>();
             builder.Services.AddTransient<CategoryService>();
-            builder.Services.AddTransient<CartService>();
+            builder.Services.AddTransient<BasketService>();
             builder.Services.AddTransient<UserService>();
             builder.Services.AddTransient<ProductService>();
             var app = builder.Build();
