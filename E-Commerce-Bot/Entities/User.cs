@@ -6,10 +6,9 @@
         public string Name { get; set; }
         public string? PhoneNumber { get; set; }
         public Process UserProcess { get; set; }
-
-        public Basket? Basket { get; set; }
-        public virtual ICollection<Order>? Orders { get; set; }
-        public ProcessHelper? ProcessHelper { get; set; }
+        public Basket Basket { get; set; } = null!;
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+        public ProcessHelper ProcessHelper { get; set; } = null!;
 
     }
 }

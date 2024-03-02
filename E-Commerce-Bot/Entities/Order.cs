@@ -17,13 +17,12 @@
                     return 0;
             }
         }
-
         public OrderType OrderType { get; set; }
         public string PaymentType { get; set; }
         public bool IsDelivered { get; set; } = false;
         public bool IsPaid { get; set; } = false;
         public long UserId { get; set; }
-        public User? User { get; set; }
-        public virtual ICollection<Product>? Products { get; set; }
+        public User User { get; set; }
+        public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

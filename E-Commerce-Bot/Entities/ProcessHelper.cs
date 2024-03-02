@@ -9,7 +9,7 @@
         public OrderType OrderType { get; set; }
         public string PaymentType { get; set; }
         public long UserId { get; set; }
-        public User? User { get; set; }
+        public User User { get; set; } = null!;
         public double Longitute { get; set; }
         public double Latitude { get; set; }
     }

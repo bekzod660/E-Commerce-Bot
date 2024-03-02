@@ -424,7 +424,7 @@ namespace E_Commerce_Bot.Services.Bot
                         Product = product,
                         ProductId = product.Id,
                         Count = amount,
-                        Baskets = user.Basket
+                        Basket = user.Basket
                     });
                 }
                 else

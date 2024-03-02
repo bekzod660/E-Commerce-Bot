@@ -30,21 +30,21 @@ namespace E_Commerce_Bot.Persistence
                 .HasMany(x => x.Orders)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
-                .IsRequired(false)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>()
                 .HasOne(x => x.Basket)
                 .WithOne(y => y.User)
                 .HasForeignKey<Basket>(y => y.UserId)
-                .IsRequired(false)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>()
                 .HasOne(x => x.ProcessHelper)
                 .WithOne(y => y.User)
                 .HasForeignKey<ProcessHelper>(y => y.UserId)
-                .IsRequired(false)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
 
