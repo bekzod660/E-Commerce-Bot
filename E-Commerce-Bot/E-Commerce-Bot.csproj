@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -6,6 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>E_Commerce_Bot</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Persistence\COnfig\**" />
+    <Content Remove="Persistence\COnfig\**" />
+    <EmbeddedResource Remove="Persistence\COnfig\**" />
+    <None Remove="Persistence\COnfig\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.16" />
@@ -20,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Persistence\COnfig\" />
   </ItemGroup>
 
 </Project>
