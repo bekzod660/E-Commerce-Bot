@@ -1,4 +1,6 @@
-﻿namespace E_Commerce_Bot.Entities
+﻿using E_Commerce_Bot.Enums;
+
+namespace E_Commerce_Bot.Entities
 {
     public class ProcessHelper
     {

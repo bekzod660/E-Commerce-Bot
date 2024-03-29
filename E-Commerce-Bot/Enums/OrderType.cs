@@ -1,4 +1,4 @@
-﻿namespace E_Commerce_Bot.Entities
+﻿namespace E_Commerce_Bot.Enums
 {
     public enum OrderType
     {

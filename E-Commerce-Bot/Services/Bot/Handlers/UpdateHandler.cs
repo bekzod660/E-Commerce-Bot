@@ -1,26 +1,22 @@
-﻿using Telegram.Bot;
+﻿using E_Commerce_Bot.Extensions;
+using E_Commerce_Bot.Helpers;
+using E_Commerce_Bot.Persistence.Repositories;
+using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using User = E_Commerce_Bot.Entities.User;
 
 namespace E_Commerce_Bot.Services.Bot
 {
     public partial class UpdateHandler : IUpdateHandler
     {
         private readonly ILogger<UpdateHandler> logger;
-        private readonly UserService _userService;
-        private readonly ProductService _productService;
-        private readonly OrderService _orderService;
-        private readonly CategoryService _categoryService;
-        private readonly BasketService _BasketService;
+        private readonly UserRepository _userRepo;
 
-        public UpdateHandler(BasketService BasketService, CategoryService categoryService, OrderService orderService, ProductService productService, UserService userService, ILogger<UpdateHandler> logger)
+        public UpdateHandler(UserRepository userRepo, ILogger<UpdateHandler> logger)
         {
-            _BasketService = BasketService;
-            _categoryService = categoryService;
-            _orderService = orderService;
-            _productService = productService;
-            _userService = userService;
+            _userRepo = userRepo;
             this.logger = logger;
         }
 
@@ -31,6 +27,20 @@ namespace E_Commerce_Bot.Services.Bot
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            User user = await _userRepo.GetByIdAsync(update.Message.From.Id);
+            if (user == null)
+            {
+                Telegram.Bot.Types.User _user = update.GetUser();
+                await _userRepo.AddAsync(new User
+                {
+                    Id = _user.Id,
+                    Name = _user.FirstName + _user.LastName,
+                    Language = _user.LanguageCode,
+                    UserProcess = Entities.UserProcess.selectLanguage
+                });
+                SetCulture.SetUserCulture(_user.LanguageCode);
+            }
+            SetCulture.SetUserCulture(user.Language);
             var handler = update.Type switch
             {
                 UpdateType.Message => BotOnMessageRecieved(botClient, update.Message),

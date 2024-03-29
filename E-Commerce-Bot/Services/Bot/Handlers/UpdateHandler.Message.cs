@@ -1,4 +1,5 @@
 ﻿using E_Commerce_Bot.Entities;
+using E_Commerce_Bot.Enums;
 using E_Commerce_Bot.Services.Bot.Buttons;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -29,7 +30,7 @@ namespace E_Commerce_Bot.Services.Bot
                     {
                         Id = message.Chat.Id,
                         Name = message.Chat.Username,
-                        UserProcess = Entities.Process.GoFullNameRequest,
+                        UserProcess = Entities.UserProcess.GoFullNameRequest,
                         Basket = new Basket(),
                         ProcessHelper = new ProcessHelper()
                     });
@@ -54,7 +55,7 @@ namespace E_Commerce_Bot.Services.Bot
             }
             else if (message.Text == "🚖 Buyurtuma berish")
             {
-                user.UserProcess = Process.OnCommentOrder;
+                user.UserProcess = UserProcess.OnCommentOrder;
                 await _userService.UpdateAsync(user);
                 await botClient.SendTextMessageAsync(
                     message.Chat.Id,
@@ -93,18 +94,18 @@ namespace E_Commerce_Bot.Services.Bot
         {
             Task res = user.UserProcess switch
             {
-                Process.GoFullNameRequest => HandleFullNameRequestAsync(user, botClient, message),
-                Process.GoContactRequest => HandleContactRequestAsync(user, botClient, message),
-                Process.MainMenu => HandleMainMenuAsync(user, botClient, message),
-                Process.DeliveryTypeRequest => HandleInDeliveryTypeRequestAsync(user, botClient, message),
-                Process.LocationRequest => HandleLocationRequestAsync(user, botClient, message),
-                Process.InCategory => HandleInCategoryAsync(user, botClient, message),
-                Process.InProduct => HandleInProductAsync(user, botClient, message),
-                Process.AmountRequest => HandleAmountRequestAsync(user, botClient, message),
-                Process.InBasket => HandleActionInBasketAsync(user, botClient, message),
-                Process.OnCommentOrder => HandleOnCommentOrderAsync(user, botClient, message),
-                Process.OnSelectPaymentType => HandleOnSelectPaymentTypeAsync(user, botClient, message),
-                Process.AtConfirmationOrder => HandleAtConfirmationOrderAsync(user, botClient, message),
+                UserProcess.GoFullNameRequest => HandleFullNameRequestAsync(user, botClient, message),
+                UserProcess.GoContactRequest => HandleContactRequestAsync(user, botClient, message),
+                UserProcess.MainMenu => HandleMainMenuAsync(user, botClient, message),
+                UserProcess.DeliveryTypeRequest => HandleInDeliveryTypeRequestAsync(user, botClient, message),
+                UserProcess.LocationRequest => HandleLocationRequestAsync(user, botClient, message),
+                UserProcess.InCategory => HandleInCategoryAsync(user, botClient, message),
+                UserProcess.InProduct => HandleInProductAsync(user, botClient, message),
+                UserProcess.AmountRequest => HandleAmountRequestAsync(user, botClient, message),
+                UserProcess.InBasket => HandleActionInBasketAsync(user, botClient, message),
+                UserProcess.OnCommentOrder => HandleOnCommentOrderAsync(user, botClient, message),
+                UserProcess.OnSelectPaymentType => HandleOnSelectPaymentTypeAsync(user, botClient, message),
+                UserProcess.AtConfirmationOrder => HandleAtConfirmationOrderAsync(user, botClient, message),
                 _ => HandleUnknownCommand(user, botClient, message)
             };
             await res;
@@ -114,7 +115,7 @@ namespace E_Commerce_Bot.Services.Bot
         {
             if (message.Text == "✅ Tasdiqlash")
             {
-                user.UserProcess = Process.InPaymentProcess;
+                user.UserProcess = UserProcess.InPaymentProcess;
                 List<Product> products = user.Basket.Items.Select(x => x.Product).ToList();
                 user.Orders.Add(
                     new Order()
@@ -152,7 +153,7 @@ namespace E_Commerce_Bot.Services.Bot
             string paymentType = PaymentTypes.Types.FirstOrDefault(message.Text);
             if (paymentType != null)
             {
-                user.UserProcess = Process.AtConfirmationOrder;
+                user.UserProcess = UserProcess.AtConfirmationOrder;
                 user.ProcessHelper.PaymentType = paymentType;
                 await _userService.UpdateAsync(user);
                 var txt = new StringBuilder("Sizning buyurtmangiz:\n");
@@ -173,7 +174,7 @@ namespace E_Commerce_Bot.Services.Bot
                     message.Chat.Id,
                     $"{txt}",
                     replyMarkup: KeyboardButtons.AfterSelectPaymentType());
-                user.UserProcess = Process.AtConfirmationOrder;
+                user.UserProcess = UserProcess.AtConfirmationOrder;
                 await _userService.UpdateAsync(user);
             }
         }
@@ -181,7 +182,7 @@ namespace E_Commerce_Bot.Services.Bot
         private async Task HandleOnCommentOrderAsync(User user, ITelegramBotClient botClient, Message message)
         {
             user.ProcessHelper.Comment = message.Text;
-            user.UserProcess = Process.OnSelectPaymentType;
+            user.UserProcess = UserProcess.OnSelectPaymentType;
             await _userService.UpdateAsync(user);
             await botClient.SendTextMessageAsync(
                 message.Chat.Id,
@@ -191,7 +192,7 @@ namespace E_Commerce_Bot.Services.Bot
 
         private async Task HandlePlaceAnOrderButtonAsync(User user, ITelegramBotClient botClient, Message message)
         {
-            user.UserProcess = Process.OnCommentOrder;
+            user.UserProcess = UserProcess.OnCommentOrder;
             if (user.Orders is null)
             {
                 user.Orders = new List<Order>();
@@ -287,7 +288,7 @@ namespace E_Commerce_Bot.Services.Bot
             if (message.Text == "🚖 Yetkazib berish")
             {
                 user.ProcessHelper.OrderType = OrderType.Delivery;
-                user.UserProcess = Process.LocationRequest;
+                user.UserProcess = UserProcess.LocationRequest;
                 await _userService.UpdateAsync(user);
                 await botClient.SendTextMessageAsync(
                     message.Chat.Id,
@@ -297,7 +298,7 @@ namespace E_Commerce_Bot.Services.Bot
             else if (message.Text == "🏃 Olib ketish")
             {
                 user.ProcessHelper.OrderType = OrderType.PickUp;
-                user.UserProcess = Process.InCategory;
+                user.UserProcess = UserProcess.InCategory;
                 await _userService.UpdateAsync(user);
                 List<Category> categories = await _categoryService.GetAllAsync();
                 await botClient.SendTextMessageAsync(
@@ -344,7 +345,7 @@ namespace E_Commerce_Bot.Services.Bot
                     products = products.Append($"\n{item.Product.Name}\n {item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
                 }
                 double totalPrice = user.Basket.Items.Select(x => x.Product.Price * x.Count).ToList().Sum();
-                user.UserProcess = Process.InBasket;
+                user.UserProcess = UserProcess.InBasket;
                 await _userService.UpdateAsync(user);
                 products = products.Append($"\nJami:{totalPrice}");
                 await botClient.SendTextMessageAsync(
@@ -361,7 +362,7 @@ namespace E_Commerce_Bot.Services.Bot
             {
                 await botClient.SendTextMessageAsync(message.Chat.Id, "Buyurtmani o'zingiz olib keting, yoki Yetkazib berishni tanlang",
                 replyMarkup: KeyboardButtons.SelectOrderType());
-                user.UserProcess = Process.DeliveryTypeRequest;
+                user.UserProcess = UserProcess.DeliveryTypeRequest;
                 await _userService.UpdateAsync(user);
             }
             else if (action == "InProduct")
@@ -378,7 +379,7 @@ namespace E_Commerce_Bot.Services.Bot
             }
             else
             {
-                user.UserProcess = Process.MainMenu;
+                user.UserProcess = UserProcess.MainMenu;
                 await _userService.UpdateAsync(user);
                 await botClient.SendTextMessageAsync(message.Chat.Id, "Juda yaxshi birgalikda buyurtma beramizmi? 😃", replyMarkup: KeyboardButtons.MainMenu());
             }
@@ -390,7 +391,7 @@ namespace E_Commerce_Bot.Services.Bot
             Product product = await _productService.GetByNameAsync(message.Text);
             if (product is Product)
             {
-                user.UserProcess = Process.AmountRequest;
+                user.UserProcess = UserProcess.AmountRequest;
                 user.ProcessHelper.ProductId = product.Id;
                 user.ProcessHelper.CategoryId = product.CategoryId;
                 await _userService.UpdateAsync(user);
@@ -462,7 +463,7 @@ namespace E_Commerce_Bot.Services.Bot
                 }
             }
             else user.PhoneNumber = message.Contact.PhoneNumber;
-            user.UserProcess = Entities.Process.MainMenu;
+            user.UserProcess = Entities.UserProcess.MainMenu;
             await _userService.UpdateAsync(user);
             await botClient.SendTextMessageAsync(
                 user.Id,
@@ -474,7 +475,7 @@ namespace E_Commerce_Bot.Services.Bot
         private async Task HandleFullNameRequestAsync(User user, ITelegramBotClient botClient, Message message)
         {
             user.Name = message.Text;
-            user.UserProcess = Entities.Process.GoContactRequest;
+            user.UserProcess = Entities.UserProcess.GoContactRequest;
             await _userService.UpdateAsync(user);
 
             await botClient.SendTextMessageAsync(
@@ -485,7 +486,7 @@ namespace E_Commerce_Bot.Services.Bot
 
         private async Task HandleUnknownCommand(User user, ITelegramBotClient botClient, Message message)
         {
-            user.UserProcess = Process.MainMenu;
+            user.UserProcess = UserProcess.MainMenu;
             await _userService.UpdateAsync(user);
             await botClient.SendTextMessageAsync(
                 message.Chat.Id,
@@ -495,7 +496,7 @@ namespace E_Commerce_Bot.Services.Bot
         }
         private async Task HandleOrderButtonAsync(User user, ITelegramBotClient botClient, Message message)
         {
-            user.UserProcess = Process.DeliveryTypeRequest;
+            user.UserProcess = UserProcess.DeliveryTypeRequest;
             user.Basket.Items.Clear();
             await _userService.UpdateAsync(user);
             await botClient.SendTextMessageAsync(
@@ -506,7 +507,7 @@ namespace E_Commerce_Bot.Services.Bot
         private async Task SendCategories(User user, ITelegramBotClient botClient, Message message)
         {
             var categories = await _categoryService.GetAllAsync();
-            user.UserProcess = Process.InCategory;
+            user.UserProcess = UserProcess.InCategory;
             await _userService.UpdateAsync(user);
             await botClient.SendTextMessageAsync(
                 message.Chat.Id,
@@ -520,7 +521,7 @@ namespace E_Commerce_Bot.Services.Bot
             await botClient.SendTextMessageAsync(message.Chat.Id, "Menyu bilan tanishish uchun «⏬ Ruyxat» ni bosing yoki taomni tanlang", replyMarkup: KeyboardButtons.MakeReplyMarkup(
                 categories.Products.Select(x => x.Name).ToList(),
                 new List<KeyboardButton> { KeyboardButtons.PlaceAnOrderButton(), KeyboardButtons.BasketButton(), KeyboardButtons.BackButton() }));
-            user.UserProcess = Process.InProduct;
+            user.UserProcess = UserProcess.InProduct;
             await _userService.UpdateAsync(user);
         }
     }
