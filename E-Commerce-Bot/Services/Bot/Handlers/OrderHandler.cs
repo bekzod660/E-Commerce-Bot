@@ -2,9 +2,7 @@
 using E_Commerce_Bot.Enums;
 using E_Commerce_Bot.Helpers;
 using E_Commerce_Bot.Persistence.Repositories;
-using E_Commerce_Bot.Services.Bot.Buttons;
 using System.Text;
-using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace E_Commerce_Bot.Services.Bot.Handlers
@@ -155,15 +153,15 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                     });
                 await _userRepo.UpdateAsync(user);
                 var totalPrice = user.Basket.Items.Select(x => x.Count * x.Product.Price).Sum();
-                await botClient.SendTextMessageAsync(
-                    message.Chat.Id,
-                    "Sizning buyurtmangiz qabul qilindi. Iltimos to'lovni amalga oshiring!");
-                await botClient.SendTextMessageAsync(
-                    message.Chat.Id,
-                    $"{user.Orders.Last().PaymentType} orqali to'lash" +
-                    $"To'lov qiymati:{user.Orders.Last().TotalPrice}" +
-                    $"To'lovni amalga oshirish uchun \"✅ To'lash\" tugmasini bosing.",
-                    replyMarkup: InlineButton.Pay(user.Orders.Last().TotalPrice, user.Orders.Last().Id));
+                //await botClient.SendTextMessageAsync(
+                //    message.Chat.Id,
+                //    "Sizning buyurtmangiz qabul qilindi. Iltimos to'lovni amalga oshiring!");
+                //await botClient.SendTextMessageAsync(
+                //    message.Chat.Id,
+                //    $"{user.Orders.Last().PaymentType} orqali to'lash" +
+                //    $"To'lov qiymati:{user.Orders.Last().TotalPrice}" +
+                //    $"To'lovni amalga oshirish uchun \"✅ To'lash\" tugmasini bosing.",
+                //    replyMarkup: InlineButton.Pay(user.Orders.Last().TotalPrice, user.Orders.Last().Id));
             }
             else
             {
@@ -189,16 +187,16 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 txt.Append($"Telefon:{user.PhoneNumber}");
                 txt.Append($"To'lov usuli:{paymentType}");
                 txt.Append($"Izohlar:{user.ProcessHelper.Comment}");
-                foreach (var item in user.Basket.Items)
-                {
-                    txt.Append($"{item.Product.Name}\n" +
-                        $"{item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
-                }
-                txt.Append($"Jami: {user.Basket.Items.Select(x => x.Count * x.Product.Price).Sum()}");
-                await botClient.SendTextMessageAsync(
-                    message.Chat.Id,
-                    $"{txt}",
-                    replyMarkup: KeyboardButtons.AfterSelectPaymentType());
+                //foreach (var item in user.Basket.Items)
+                //{
+                //    txt.Append($"{item.Product.Name}\n" +
+                //        $"{item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
+                //}
+                //txt.Append($"Jami: {user.Basket.Items.Select(x => x.Count * x.Product.Price).Sum()}");
+                //await botClient.SendTextMessageAsync(
+                //    message.Chat.Id,
+                //    $"{txt}",
+                //    replyMarkup: KeyboardButtons.AfterSelectPaymentType());
                 user.UserProcess = UserProcess.atConfirmationOrder;
                 await _userRepo.UpdateAsync(user);
             }
@@ -209,10 +207,10 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             user.ProcessHelper.Comment = message.Text;
             user.UserProcess = UserProcess.onSelectPaymentType;
             await _userRepo.UpdateAsync(user);
-            await botClient.SendTextMessageAsync(
-                message.Chat.Id,
-                "Buyurtmangiz uchun to'lov turini tanlang",
-                replyMarkup: KeyboardButtons.OnSelectPaymentType());
+            //await botClient.SendTextMessageAsync(
+            //    message.Chat.Id,
+            //    "Buyurtmangiz uchun to'lov turini tanlang",
+            //    replyMarkup: KeyboardButtons.OnSelectPaymentType());
         }
 
         public async Task HandlePlaceAnOrderButtonAsync(Entities.User user, Message message)

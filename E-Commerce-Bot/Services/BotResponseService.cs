@@ -3,7 +3,6 @@ using E_Commerce_Bot.Helpers;
 using E_Commerce_Bot.Persistence.Repositories;
 using E_Commerce_Bot.Recources;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace E_Commerce_Bot.Services
@@ -138,11 +137,11 @@ namespace E_Commerce_Bot.Services
 
         public async Task SendProduct(long userId)
         {
-            await _botClient.SendPhotoAsync(
-                    userId,
-                    photo: InputFile.FromUri("https://scontent.fbhk1-3.fna.fbcdn.net/v/t1.6435-9/101732775_3166364486746355_5046697266992119808_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=c2f564&_nc_ohc=X8LV8qIcS1UAX9h5lVm&_nc_ht=scontent.fbhk1-3.fna&oh=00_AfCtHJrBx1U0UT87jgGl-8_1kDW5MncNESKhdyHmBgMD9Q&oe=6602D164"),
-                    caption: $"{product.Name}({product.Description})\nNarxi: {product.Price}"
-                    );
+            //await _botClient.SendPhotoAsync(
+            //        userId,
+            //        photo: InputFile.FromUri("https://scontent.fbhk1-3.fna.fbcdn.net/v/t1.6435-9/101732775_3166364486746355_5046697266992119808_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=c2f564&_nc_ohc=X8LV8qIcS1UAX9h5lVm&_nc_ht=scontent.fbhk1-3.fna&oh=00_AfCtHJrBx1U0UT87jgGl-8_1kDW5MncNESKhdyHmBgMD9Q&oe=6602D164"),
+            //        caption: $"{product.Name}({product.Description})\nNarxi: {product.Price}"
+            //        );
         }
 
         public async Task SendAmountRequest(long userId)
