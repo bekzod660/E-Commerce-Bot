@@ -9,5 +9,6 @@
         Task<T> GetByIdAsync(int id);
         Task<T> GetByIdAsync(long id);
         Task<List<T>> GetAllAsync();
+        Task<T> GetByNameAsync(string text);
     }
 }

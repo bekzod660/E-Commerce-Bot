@@ -1,12 +1,25 @@
-﻿namespace E_Commerce_Bot.Entities
+﻿namespace E_Commerce_Bot.Enums
 {
     public enum UserProcess
     {
+        sendGreeting,
         selectLanguage,
         contactRequest,
-        code,
+        verifyCode,
+        fullName,
         mainMenu,
         selectDeliveryType,
+        inDelivery,
+        inPickUp,
+        locationRequest,
+        inCategory,
+        inProduct,
+        amountRequest,
+        onCommentOrder,
+        onSelectPaymentType,
+        atConfirmationOrder,
+        inPaymentProcess,
+        inBasket
 
     }
 }

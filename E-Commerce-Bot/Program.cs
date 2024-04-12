@@ -1,5 +1,7 @@
 
+using E_Commerce_Bot.Entities;
 using E_Commerce_Bot.Persistence;
+using E_Commerce_Bot.Persistence.Repositories;
 using E_Commerce_Bot.Services;
 using E_Commerce_Bot.Services.Bot;
 using Microsoft.EntityFrameworkCore;
@@ -35,11 +37,9 @@ namespace E_Commerce_Bot
                     o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             }, ServiceLifetime.Singleton);
             builder.Services.AddTransient<IUpdateHandler, UpdateHandler>();
-            builder.Services.AddTransient<OrderService>();
-            builder.Services.AddTransient<CategoryService>();
-            builder.Services.AddTransient<BasketService>();
-            builder.Services.AddTransient<UserService>();
-            builder.Services.AddTransient<ProductService>();
+            builder.Services.AddTransient<IBotResponseService, BotResponseService>();
+            builder.Services.AddTransient<ILocalizationHandler, LocalizationHandler>();
+            builder.Services.AddTransient<IBaseRepository<User>, UserRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

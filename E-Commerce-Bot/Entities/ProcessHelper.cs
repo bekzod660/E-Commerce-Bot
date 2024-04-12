@@ -12,6 +12,7 @@ namespace E_Commerce_Bot.Entities
         public string PaymentType { get; set; }
         public long UserId { get; set; }
         public User User { get; set; } = null!;
+        public string? UserPhoneNumber { get; set; }
         public double Longitute { get; set; }
         public double Latitude { get; set; }
     }

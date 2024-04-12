@@ -9,12 +9,12 @@ namespace E_Commerce_Bot.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteAsync()
+        public Task<bool> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Category> GetAllAsync()
+        public Task<bool> DeleteAsync(long id)
         {
             throw new NotImplementedException();
         }
@@ -29,7 +29,17 @@ namespace E_Commerce_Bot.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateAsync()
+        public Task<bool> UpdateAsync(Category obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Category>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Category> GetByNameAsync(string text)
         {
             throw new NotImplementedException();
         }

@@ -6,7 +6,7 @@ namespace E_Commerce_Bot.Extensions
     public static class TelegramExtension
     {
         public static User GetUser(this Update update)
-            => update switch
+            => update.Type switch
             {
                 UpdateType.Message => update.Message.From,
                 UpdateType.EditedMessage => update.EditedMessage.From,
