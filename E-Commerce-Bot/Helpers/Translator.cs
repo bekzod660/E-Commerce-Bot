@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace E_Commerce_Bot.Helpers
 {
-    public class Translator
+    public static class Translator
     {
         public static List<string> Translate(string property, List<Category> translations)
         {
@@ -29,28 +29,28 @@ namespace E_Commerce_Bot.Helpers
             }
             return result;
         }
-        public static List<string> Translate(string property, List<Product> translations)
+        public static List<TranslatedProduct> Translate(this List<Product> translations, string language)
         {
-            List<string> result = new List<string>();
+            List<TranslatedProduct> translatedProduct = new List<TranslatedProduct>();
 
             foreach (var item in translations)
             {
-                PropertyInfo prop = item.GetType().GetProperty(property);
-
-                if (prop != null)
-                {
-                    object value = prop.GetValue(item);
-                    if (value != null)
+                string nameProperty = (item.GetType().GetProperty($"name_{language}")).GetValue(item).ToString();
+                string descriptionProperty = (item.GetType().GetProperty($"description_{language}")).GetValue(item).ToString();
+                if (descriptionProperty != null && nameProperty != null)
+                    translatedProduct.Add(new TranslatedProduct
                     {
-                        result.Add(value.ToString());
-                    }
-                }
+                        Name = nameProperty,
+                        Description = descriptionProperty,
+                        Price = item.Price,
+                        ImagePath = item.ImagePath
+                    });
                 else
                 {
-                    throw new ArgumentException($"Property '{property}' not found in object of type '{item.GetType().Name}'.");
+                    throw new ArgumentException($"Property '{nameProperty}' not found in object of type '{item.GetType().Name}'.");
                 }
             }
-            return result;
+            return translatedProduct;
         }
 
         public static TranslatedProduct Translate(this Product product, string language)

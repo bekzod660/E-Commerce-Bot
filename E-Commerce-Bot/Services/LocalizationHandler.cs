@@ -14,10 +14,13 @@ public class LocalizationHandler : ILocalizationHandler
 
     public string GetValue(string key, params string[] arguments)
     {
+        Type buttonType = typeof(Button);
+        string assemblyQualifiedName = buttonType.AssemblyQualifiedName;
 
+        Console.WriteLine(assemblyQualifiedName);
         using var scope = serviceScopeFactory.CreateScope();
-        var types = GetResourceClasses(typeof(Button).Namespace)
-            .Select(c => typeof(IStringLocalizer<>).MakeGenericType(c));
+        var t = GetResourceClasses(typeof(Button).Namespace);
+        var types = t.Select(c => typeof(IStringLocalizer<>).MakeGenericType(c));
         var localizers = types.Select(t => scope.ServiceProvider.GetService(t) as IStringLocalizer);
 
         foreach (var localizer in localizers)

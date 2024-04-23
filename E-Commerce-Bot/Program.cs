@@ -1,9 +1,11 @@
 
 using E_Commerce_Bot.Entities;
+using E_Commerce_Bot.Helpers;
 using E_Commerce_Bot.Persistence;
 using E_Commerce_Bot.Persistence.Repositories;
 using E_Commerce_Bot.Services;
 using E_Commerce_Bot.Services.Bot;
+using E_Commerce_Bot.Services.Bot.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -37,9 +39,18 @@ namespace E_Commerce_Bot
                     o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             }, ServiceLifetime.Singleton);
             builder.Services.AddTransient<IUpdateHandler, UpdateHandler>();
+            builder.Services.AddTransient<OrderHandler>();
+            builder.Services.AddTransient<SettingsHandler>();
+            builder.Services.AddTransient<BasketHandler>();
+            builder.Services.AddTransient<BackHandler>();
+            builder.Services.AddTransient<IUpdateHandler, UpdateHandler>();
             builder.Services.AddTransient<IBotResponseService, BotResponseService>();
             builder.Services.AddTransient<ILocalizationHandler, LocalizationHandler>();
+            builder.Services.AddTransient<IBaseRepository<Category>, CategoryRepository>();
+            builder.Services.AddTransient<IBaseRepository<Product>, ProductRepository>();
             builder.Services.AddTransient<IBaseRepository<User>, UserRepository>();
+            builder.Services.AddMemoryCache();
+            builder.Services.AddTransient<TokenService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -15,5 +15,6 @@
         Task SendProduct(long userId);
         Task SendAmountRequest(long userId);
         Task SendCommentRequest(long userId);
+        Task SendBasketItems(long userId);
     }
 }

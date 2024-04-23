@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="msg.all" xml:space="preserve">
+    <value>Jami</value>
+  </data>
   <data name="msg.amount" xml:space="preserve">
     <value>Miqdorini tanlang yoki kiriting:</value>
+  </data>
+  <data name="msg.basket.clean" xml:space="preserve">
+    <value>Tozalash</value>
+  </data>
+  <data name="msg.basket.clear.delete" xml:space="preserve">
+    <value>*«❌ Maxsulot nomi»* - savatdan o'chirish \r\n *«🔄 Tozalash»* - savatni butunlay bo'shatish</value>
   </data>
   <data name="msg.comment.order" xml:space="preserve">
     <value>Buyurtmaga izoh qoldiring</value>

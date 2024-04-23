@@ -1,6 +1,6 @@
 ﻿namespace E_Commerce_Bot.Recources
 {
-    public static class Button
+    public class Button
     {
         public static string Greeting = "btn.greeting";
 

@@ -14,7 +14,7 @@ namespace E_Commerce_Bot.Services.Bot
     public partial class UpdateHandler : IUpdateHandler
     {
         private readonly ILogger<UpdateHandler> logger;
-        private readonly UserRepository _userRepo;
+        private readonly IBaseRepository<User> _userRepo;
         private readonly IBotResponseService _botResponseService;
         private readonly TokenService _tokenService;
         private readonly ILocalizationHandler _localization;
@@ -22,7 +22,7 @@ namespace E_Commerce_Bot.Services.Bot
         private readonly BasketHandler _basketHandler;
         private readonly BackHandler _backHandler;
         private readonly SettingsHandler _settingsHandler;
-        public UpdateHandler(UserRepository userRepo,
+        public UpdateHandler(
             ILogger<UpdateHandler> logger,
             IBotResponseService botResponseService,
             TokenService tokenService,
@@ -30,7 +30,8 @@ namespace E_Commerce_Bot.Services.Bot
             OrderHandler orderHandler,
             BasketHandler basketHandler,
             BackHandler backHandler,
-            SettingsHandler settingsHandler)
+            SettingsHandler settingsHandler,
+            IBaseRepository<User> userRepo)
         {
             _userRepo = userRepo;
             this.logger = logger;
@@ -41,6 +42,7 @@ namespace E_Commerce_Bot.Services.Bot
             _basketHandler = basketHandler;
             _backHandler = backHandler;
             _settingsHandler = settingsHandler;
+            _userRepo = userRepo;
         }
 
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)

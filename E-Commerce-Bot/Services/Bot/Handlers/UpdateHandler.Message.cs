@@ -26,11 +26,11 @@ namespace E_Commerce_Bot.Services.Bot
             }
             else if (message.Text == _localization.GetValue(Button.Basket))
             {
-                await _basketHandler.HandleBasketButtonAsync(user, botClient, message);
+                await _basketHandler.HandleBasketButtonAsync(user, message);
             }
             else if (message.Text == _localization.GetValue(Button.Back))
             {
-                await _backHandler.HandleBackButtonAsync(user, botClient, message);
+                await _backHandler.HandleBackButtonAsync(user, message);
             }
             else if (user is User)
             {
@@ -38,9 +38,8 @@ namespace E_Commerce_Bot.Services.Bot
             }
             else
             {
-                await HandleUnknownCommand(user, botClient, message);
+                await HandleUnknownCommand(user, message);
             }
-
         }
         private async Task HandleUserProcess(User user, ITelegramBotClient botClient, Message message)
         {

@@ -1,7 +1,9 @@
 ﻿using E_Commerce_Bot.Entities;
+using E_Commerce_Bot.Enums;
 using E_Commerce_Bot.Helpers;
 using E_Commerce_Bot.Persistence.Repositories;
 using E_Commerce_Bot.Recources;
+using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -10,16 +12,16 @@ namespace E_Commerce_Bot.Services
     public class BotResponseService : IBotResponseService
     {
         private readonly ITelegramBotClient _botClient;
-        private readonly UserRepository _userRepo;
+        private readonly IBaseRepository<User> _userRepo;
         private readonly ILocalizationHandler localization;
         private readonly IBaseRepository<Category> _categoryRepo;
 
-        public BotResponseService(ITelegramBotClient botClient, UserRepository userRepo, ILocalizationHandler localization, IBaseRepository<Category> categoryRepo)
+        public BotResponseService(ITelegramBotClient botClient, ILocalizationHandler localization, IBaseRepository<Category> categoryRepo, IBaseRepository<User> userRepo)
         {
             _botClient = botClient;
-            _userRepo = userRepo;
             this.localization = localization;
             _categoryRepo = categoryRepo;
+            _userRepo = userRepo;
         }
 
         public Task SendContactRequest(long userId)
@@ -171,6 +173,29 @@ namespace E_Commerce_Bot.Services
              userId,
              $"{localization.GetValue(Recources.Message.OnCommentToOrder)}",
              replyMarkup: GetReplyKeyboardMarkup(matrix));
+        }
+
+        public async Task SendBasketItems(long userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId);
+            await _botClient.SendTextMessageAsync(
+               userId,
+               localization.GetValue(Message.OnBasketDeleteOrClear));
+            var products = new StringBuilder(localization.GetValue(Button.Basket));
+            foreach (var item in user.Basket.Items)
+            {
+                var product = item.Product.Translate(user.Language);
+                products = products.Append($"\n{product.Name}\n {item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
+            }
+            double totalPrice = user.Basket.Items.Select(x => x.Product.Price * x.Count).ToList().Sum();
+            user.UserProcess = UserProcess.inBasket;
+            await _userRepo.UpdateAsync(user);
+            products = products.Append($"\n{localization.GetValue(Message.MessageAll)}:{totalPrice}");
+            var _products = user.Basket.Items.Select(x => x.Product).ToList().Translate(user.Language);
+            await _botClient.SendTextMessageAsync(
+            userId,
+                $"{products}",
+                replyMarkup: GetReplyKeyboardMarkup(new[] { _products.Select(x => x.Name).ToArray() }));
         }
     }
 }

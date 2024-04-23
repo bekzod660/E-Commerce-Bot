@@ -1,6 +1,6 @@
 ﻿namespace E_Commerce_Bot.Recources
 {
-    public static class Message
+    public class Message
     {
         public static string Greeting = "msg.greeting";
         public static string SelectLanguage = "msg.select.language";
@@ -18,6 +18,11 @@
         public static string InAmount = "msg.amount";
         public static string EmptyBasket = "msg.empty.basket";
         public static string OnCommentToOrder = "msg.comment.order";
+
+        public static string OnBasket = "msg.basket.clean";
+        public static string OnBasketDeleteOrClear = "msg.basket.clear.delete";
+
+        public static string MessageAll = "msg.all";
 
     }
 }
