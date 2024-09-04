@@ -37,7 +37,6 @@ namespace E_Commerce_Bot.Services
             var message = await _botClient.SendTextMessageAsync(
             text: localization.GetValue(Recources.Message.Greeting, name),
                 chatId: userId);
-
         }
 
         public async Task SendLangugaes(long userId)
@@ -85,14 +84,15 @@ namespace E_Commerce_Bot.Services
         {
             var matrix = new[]
             {
-                Button.Order,
-                Button.FeedBack, Button.ContactUs,
-                Button.Information, Button.Settings
+                new[] { Button.Order },                    // First row with 1 button
+                new[] { Button.FeedBack, Button.ContactUs }, // Second row with 2 buttons
+                new[] { Button.Information, Button.Settings } // Third row with 2 buttons
             };
+
             await _botClient.SendTextMessageAsync(
                 userId,
                 $"{localization.GetValue(Recources.Message.Wellcome)}",
-                replyMarkup: GetReplyKeyboardMarkup(new[] { matrix }));
+                replyMarkup: GetReplyKeyboardMarkup(matrix));
         }
 
         public async Task SendDeliveryTypes(long userId)

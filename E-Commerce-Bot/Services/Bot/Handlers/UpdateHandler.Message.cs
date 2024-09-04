@@ -134,6 +134,7 @@ namespace E_Commerce_Bot.Services.Bot
                     await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
                     user.UserProcess = UserProcess.verifyCode;
                     user.Code = code;
+                    user.PhoneNumber = message.Text;
                     await _userRepo.UpdateAsync(user);
                 }
                 else
@@ -147,6 +148,7 @@ namespace E_Commerce_Bot.Services.Bot
                 await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
                 user.UserProcess = UserProcess.verifyCode;
                 user.Code = code;
+                user.PhoneNumber = message.Contact.PhoneNumber;
                 await _userRepo.UpdateAsync(user);
             }
 
