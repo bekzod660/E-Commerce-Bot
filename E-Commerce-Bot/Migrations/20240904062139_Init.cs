@@ -17,7 +17,9 @@ namespace E_Commerce_Bot.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    name_uz = table.Column<string>(type: "text", nullable: false),
+                    name_ru = table.Column<string>(type: "text", nullable: false),
+                    name_en = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,10 +33,12 @@ namespace E_Commerce_Bot.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    Language = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
                     UserProcess = table.Column<int>(type: "integer", nullable: false),
-                    BasketId = table.Column<int>(type: "integer", nullable: true),
-                    ProcessHelperId = table.Column<int>(type: "integer", nullable: true)
+                    Code = table.Column<string>(type: "text", nullable: true),
+                    BasketId = table.Column<int>(type: "integer", nullable: false),
+                    ProcessHelperId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,11 +51,15 @@ namespace E_Commerce_Bot.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Name_Uz = table.Column<string>(type: "text", nullable: false),
+                    Name_Ru = table.Column<string>(type: "text", nullable: false),
+                    Name_En = table.Column<string>(type: "text", nullable: false),
+                    Description_Uz = table.Column<string>(type: "text", nullable: false),
+                    Description_Ru = table.Column<string>(type: "text", nullable: false),
+                    Description_En = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false),
                     ImagePath = table.Column<string>(type: "text", nullable: false),
-                    CategoryId = table.Column<int>(type: "integer", nullable: true)
+                    CategoryId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,7 +68,8 @@ namespace E_Commerce_Bot.Migrations
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,7 +78,7 @@ namespace E_Commerce_Bot.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<long>(type: "bigint", nullable: true)
+                    UserId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,11 +100,12 @@ namespace E_Commerce_Bot.Migrations
                     Longitute = table.Column<double>(type: "double precision", nullable: false),
                     Latitude = table.Column<double>(type: "double precision", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: true),
-                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
                     OrderType = table.Column<int>(type: "integer", nullable: false),
-                    PaymentType = table.Column<int>(type: "integer", nullable: false),
+                    PaymentType = table.Column<string>(type: "text", nullable: false),
                     IsDelivered = table.Column<bool>(type: "boolean", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: true)
+                    IsPaid = table.Column<bool>(type: "boolean", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -114,12 +124,15 @@ namespace E_Commerce_Bot.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ProductId = table.Column<int>(type: "integer", nullable: true),
-                    CategoryId = table.Column<int>(type: "integer", nullable: true),
-                    UserId = table.Column<long>(type: "bigint", nullable: true),
-                    Order = table.Column<int>(type: "integer", nullable: true),
-                    Longitute = table.Column<double>(type: "double precision", nullable: true),
-                    Latitude = table.Column<double>(type: "double precision", nullable: true)
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    OrderType = table.Column<int>(type: "integer", nullable: false),
+                    PaymentType = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    UserPhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    Longitute = table.Column<double>(type: "double precision", nullable: false),
+                    Latitude = table.Column<double>(type: "double precision", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -139,22 +152,48 @@ namespace E_Commerce_Bot.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Count = table.Column<int>(type: "integer", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: true),
-                    BasketsId = table.Column<int>(type: "integer", nullable: true)
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    BasketId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Item", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Item_Baskets_BasketsId",
-                        column: x => x.BasketsId,
+                        name: "FK_Item_Baskets_BasketId",
+                        column: x => x.BasketId,
                         principalTable: "Baskets",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Item_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderProduct",
+                columns: table => new
+                {
+                    OrdersId = table.Column<int>(type: "integer", nullable: false),
+                    ProductsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderProduct", x => new { x.OrdersId, x.ProductsId });
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Orders_OrdersId",
+                        column: x => x.OrdersId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -164,14 +203,19 @@ namespace E_Commerce_Bot.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Item_BasketsId",
+                name: "IX_Item_BasketId",
                 table: "Item",
-                column: "BasketsId");
+                column: "BasketId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Item_ProductId",
                 table: "Item",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderProduct_ProductsId",
+                table: "OrderProduct",
+                column: "ProductsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -209,13 +253,16 @@ namespace E_Commerce_Bot.Migrations
                 name: "Item");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "OrderProduct");
 
             migrationBuilder.DropTable(
                 name: "ProcessHelpers");
 
             migrationBuilder.DropTable(
                 name: "Baskets");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");

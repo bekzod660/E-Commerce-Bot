@@ -1,5 +1,9 @@
 ﻿using E_Commerce_Bot.Entities;
+using E_Commerce_Bot.Enums;
 using E_Commerce_Bot.Persistence.Repositories;
+using E_Commerce_Bot.Services.Bot.Buttons;
+using System.Text;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using User = E_Commerce_Bot.Entities.User;
 
@@ -11,6 +15,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
         private readonly IBaseRepository<Entities.Category> _categoryRepo;
         private readonly IBaseRepository<Entities.Product> _productRepo;
         private readonly IBotResponseService _botResponseService;
+        private readonly ITelegramBotClient _botClient;
         private readonly ILocalizationHandler localization;
 
         public BasketHandler(IBaseRepository<Entities.User> userRepo,
@@ -27,15 +32,15 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             if (text == "Tozalash")
             {
                 user.Basket.Items.Clear();
-                await _userService.UpdateAsync(user);
-                await SendCategories(user, botClient, message);
+                await _userRepo.UpdateAsync(user);
+                await _botResponseService.SendCategories(user.Id, user.Language);
             }
             else
             {
-                var deletedProdcut = await _productService.GetByNameAsync(text);
+                var deletedProdcut = await _productRepo.GetByNameAsync(text);
                 user.Basket.Items.Remove(user.Basket.Items.FirstOrDefault(x => x.Product.Id == deletedProdcut.Id));
-                await _userService.UpdateAsync(user);
-                await HandleBasketButtonAsync(user, botClient, message);
+                await _userRepo.UpdateAsync(user);
+                await HandleBasketButtonAsync(user, _botClient, message);
             }
         }
 
@@ -43,7 +48,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
         {
             if (user.Basket.Items.Count == 0)
             {
-                await SendCategories(user, botClient, message);
+                await _botResponseService.SendCategories(user.Id, user.Language);
             }
             else
             {
@@ -53,16 +58,16 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 var products = new StringBuilder("📥 Savat:");
                 foreach (var item in user.Basket.Items)
                 {
-                    products = products.Append($"\n{item.Product.Name}\n {item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
+                    products = products.Append($"\n{item.Product.Name_Uz}\n {item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
                 }
                 double totalPrice = user.Basket.Items.Select(x => x.Product.Price * x.Count).ToList().Sum();
-                user.UserProcess = UserProcess.InBasket;
-                await _userService.UpdateAsync(user);
+                user.UserProcess = UserProcess.inBasket;
+                await _userRepo.UpdateAsync(user);
                 products = products.Append($"\nJami:{totalPrice}");
                 await botClient.SendTextMessageAsync(
                     message.Chat.Id,
                     $"{products}",
-                    replyMarkup: KeyboardButtons.DeleteOrRemoveBasket(user.Basket.Items.Select(x => x.Product.Name)));
+                    replyMarkup: KeyboardButtons.DeleteOrRemoveBasket(user.Basket.Items.Select(x => x.Product.Name_Uz)));
             }
         }
     }

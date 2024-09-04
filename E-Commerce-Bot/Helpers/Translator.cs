@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace E_Commerce_Bot.Helpers
 {
-    public class Translator
+    public static class Translator
     {
         public static List<string> Translate(string property, List<Category> translations)
         {

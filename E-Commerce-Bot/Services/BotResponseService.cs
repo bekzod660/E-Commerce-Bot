@@ -10,11 +10,11 @@ namespace E_Commerce_Bot.Services
     public class BotResponseService : IBotResponseService
     {
         private readonly ITelegramBotClient _botClient;
-        private readonly UserRepository _userRepo;
+        private readonly IBaseRepository<User> _userRepo;
         private readonly ILocalizationHandler localization;
         private readonly IBaseRepository<Category> _categoryRepo;
 
-        public BotResponseService(ITelegramBotClient botClient, UserRepository userRepo, ILocalizationHandler localization, IBaseRepository<Category> categoryRepo)
+        public BotResponseService(ITelegramBotClient botClient, IBaseRepository<User> userRepo, ILocalizationHandler localization, IBaseRepository<Category> categoryRepo)
         {
             _botClient = botClient;
             _userRepo = userRepo;

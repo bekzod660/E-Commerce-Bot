@@ -26,11 +26,11 @@ namespace E_Commerce_Bot.Services.Bot
             }
             else if (message.Text == _localization.GetValue(Button.Basket))
             {
-                await _basketHandler.HandleBasketButtonAsync(user, botClient, message);
+                await _basketHandler.HandleActionInBasketAsync(user, message);
             }
             else if (message.Text == _localization.GetValue(Button.Back))
             {
-                await _backHandler.HandleBackButtonAsync(user, botClient, message);
+                await _backHandler.HandleBackButtonAsync(user);
             }
             else if (user is User)
             {
@@ -38,7 +38,7 @@ namespace E_Commerce_Bot.Services.Bot
             }
             else
             {
-                await HandleUnknownCommand(user, botClient, message);
+                await HandleUnknownCommand(user, message);
             }
 
         }
@@ -123,13 +123,14 @@ namespace E_Commerce_Bot.Services.Bot
         }
         private async Task HandleContactRequestAsync(User user, Message message)
         {
-            string code = GetSmsCode.Get();
+            string code = GetSmsCode.Get();// when sms working
+            string testCode = "1111";
             if (message.Contact is null)
             {
                 if (Regex.Match(message.Text, @"(?:[+][9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})").Success)
                 {
 
-                    await SendSms(message.Contact.PhoneNumber, code);
+                    //await SendSms(message.Contact.PhoneNumber, code); //avaible when sms working
                     await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
                     user.UserProcess = UserProcess.verifyCode;
                     user.Code = code;
@@ -140,11 +141,15 @@ namespace E_Commerce_Bot.Services.Bot
                     await _botResponseService.InValidPhoneNumber(user.Id);
                 }
             }
-            await SendSms(message.Contact.PhoneNumber, code);
-            await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
-            user.UserProcess = UserProcess.verifyCode;
-            user.Code = code;
-            await _userRepo.UpdateAsync(user);
+            else
+            {
+                //  await SendSms(message.Contact.PhoneNumber, code);
+                await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
+                user.UserProcess = UserProcess.verifyCode;
+                user.Code = code;
+                await _userRepo.UpdateAsync(user);
+            }
+
         }
 
         private async Task HandleFullNameRequestAsync(User user, Message message)
@@ -152,7 +157,7 @@ namespace E_Commerce_Bot.Services.Bot
             user.Name = message.Text;
             user.UserProcess = UserProcess.mainMenu;
             await _userRepo.UpdateAsync(user);
-            await HandleMainMenuAsync(user, message);
+            await _botResponseService.SenMainMenu(user.Id);
         }
 
         private async Task HandleUnknownCommand(User user, Message message)

@@ -14,7 +14,7 @@ namespace E_Commerce_Bot.Services.Bot
     public partial class UpdateHandler : IUpdateHandler
     {
         private readonly ILogger<UpdateHandler> logger;
-        private readonly UserRepository _userRepo;
+        private readonly IBaseRepository<User> _userRepo;
         private readonly IBotResponseService _botResponseService;
         private readonly TokenService _tokenService;
         private readonly ILocalizationHandler _localization;
@@ -22,7 +22,7 @@ namespace E_Commerce_Bot.Services.Bot
         private readonly BasketHandler _basketHandler;
         private readonly BackHandler _backHandler;
         private readonly SettingsHandler _settingsHandler;
-        public UpdateHandler(UserRepository userRepo,
+        public UpdateHandler(IBaseRepository<User> userRepo,
             ILogger<UpdateHandler> logger,
             IBotResponseService botResponseService,
             TokenService tokenService,
@@ -59,11 +59,15 @@ namespace E_Commerce_Bot.Services.Bot
                     Id = _user.Id,
                     Name = _user.FirstName + _user.LastName,
                     Language = _user.LanguageCode,
-                    UserProcess = UserProcess.sendGreeting
+                    UserProcess = UserProcess.sendGreeting,
+                    ProcessHelper = new Entities.ProcessHelper()
                 });
                 SetCulture.SetUserCulture(_user.LanguageCode);
             }
-            SetCulture.SetUserCulture(user.Language);
+            else
+            {
+                SetCulture.SetUserCulture(user.Language);
+            }
             var handler = update.Type switch
             {
                 UpdateType.Message => BotOnMessageRecieved(botClient, update.Message),

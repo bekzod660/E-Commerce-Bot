@@ -1,9 +1,11 @@
 
 using E_Commerce_Bot.Entities;
+using E_Commerce_Bot.Helpers;
 using E_Commerce_Bot.Persistence;
 using E_Commerce_Bot.Persistence.Repositories;
 using E_Commerce_Bot.Services;
 using E_Commerce_Bot.Services.Bot;
+using E_Commerce_Bot.Services.Bot.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -29,17 +31,25 @@ namespace E_Commerce_Bot
 
                     return new TelegramBotClient(builder.Configuration.GetConnectionString("Bot"), httpClient);
                 });
-            builder.Services.AddHostedService<Bot>();
-
+            builder.Services.AddMemoryCache();
+            builder.Services.AddLocalization();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection"),
                     o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             }, ServiceLifetime.Singleton);
+            builder.Services.AddTransient<IBaseRepository<User>, UserRepository>();
+            builder.Services.AddTransient<IBaseRepository<Category>, CategoryRepository>();
+            builder.Services.AddTransient<IBaseRepository<Product>, ProductRepository>();
             builder.Services.AddTransient<IUpdateHandler, UpdateHandler>();
             builder.Services.AddTransient<IBotResponseService, BotResponseService>();
             builder.Services.AddTransient<ILocalizationHandler, LocalizationHandler>();
-            builder.Services.AddTransient<IBaseRepository<User>, UserRepository>();
+            builder.Services.AddTransient<TokenService>();
+            builder.Services.AddTransient<OrderHandler>();
+            builder.Services.AddTransient<BackHandler>();
+            builder.Services.AddTransient<SettingsHandler>();
+            builder.Services.AddTransient<BasketHandler>();
+            builder.Services.AddHostedService<Bot>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -49,7 +59,7 @@ namespace E_Commerce_Bot
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
