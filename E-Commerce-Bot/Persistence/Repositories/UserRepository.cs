@@ -41,7 +41,9 @@ namespace E_Commerce_Bot.Persistence.Repositories
 
         public async Task<User> GetByIdAsync(long id)
         {
-            User user = _db.Users.FirstOrDefault(x => x.Id == id);
+            var user = await _db.Users.Include(x => x.Basket)
+                                        .Include(x => x.ProcessHelper)
+                                        .FirstOrDefaultAsync(e => e.Id == id);
             return user;
         }
 

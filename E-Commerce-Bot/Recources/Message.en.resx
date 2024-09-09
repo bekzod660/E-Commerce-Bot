@@ -123,6 +123,9 @@
   <data name="msg.comment.order" xml:space="preserve">
     <value>Buyurtmaga izoh qoldiring</value>
   </data>
+  <data name="msg.contact.request" xml:space="preserve">
+    <value>Please send phone number!</value>
+  </data>
   <data name="msg.empty.basket" xml:space="preserve">
     <value>Sizning savatingiz bo'sh, buyurtma berish uchun mahsulot tanlang</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="msg.full.name" xml:space="preserve">
     <value>Ismingizni kiriting...</value>
+  </data>
+  <data name="msg.greeting" xml:space="preserve">
+    <value>Welcome to bot!</value>
   </data>
   <data name="msg.incategory" xml:space="preserve">
     <value>Nimadan boshlaymiz?</value>
@@ -148,7 +154,7 @@
     <value>Buyurtmani o'zingiz olib keting, yoki Yetkazib berishni tanlang</value>
   </data>
   <data name="msg.select.language" xml:space="preserve">
-    <value>Assalomu aleykum, {0} tilni tanlang.</value>
+    <value>Assalomu aleykum, tilni tanlang.</value>
   </data>
   <data name="msg.wellcome" xml:space="preserve">
     <value>Botga xush kelibsiz!</value>

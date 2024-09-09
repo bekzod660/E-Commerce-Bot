@@ -4,6 +4,7 @@
     {
         public static string Greeting = "msg.greeting";
         public static string SelectLanguage = "msg.select.language";
+        public static string SendContactRequest = "msg.contact.request";
         public static string InValidPhoneNumber = "msg.invalid.phonenumber";
         public static string EnterCode = "msg.enter.code";
         public static string ErrorCode = "msg.error.code";

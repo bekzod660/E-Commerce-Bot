@@ -3,6 +3,7 @@
     public static class Button
     {
         public static string Greeting = "btn.greeting";
+        public static string ContactRequest = "btn.contact";
 
         public static string Back = "btn.back";
         public static string Basket = "btn.basket";
@@ -14,11 +15,14 @@
         public static string FeedBack = "btn.feedback";
         public static string Information = "btn.information";
         #endregion
-
+        #region OrderMenu
         public static string Delivery = "btn.delivery";
         public static string PickUp = "btn.pickup";
-
         public static string CommentToOrder = "btn.comment.order";
-
+        #endregion
+        #region Settings
+        public static string ChangeLanguage = "btn.settings.language";
+        public static string ChangePhone = "btn.settings.phone";
+        #endregion
     }
 }

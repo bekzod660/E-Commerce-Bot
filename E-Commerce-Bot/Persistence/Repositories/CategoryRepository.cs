@@ -1,9 +1,16 @@
 ﻿using E_Commerce_Bot.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce_Bot.Persistence.Repositories
 {
     public class CategoryRepository : IBaseRepository<Category>
     {
+        private readonly ApplicationDbContext _db;
+
+        public CategoryRepository(ApplicationDbContext db)
+        {
+            _db = db;
+        }
         public Task<bool> AddAsync(Category obj)
         {
             throw new NotImplementedException();
@@ -34,9 +41,9 @@ namespace E_Commerce_Bot.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<Category>> GetAllAsync()
+        public async Task<List<Category>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _db.Categories.AsNoTracking().ToListAsync();
         }
 
         public Task<Category> GetByNameAsync(string text)

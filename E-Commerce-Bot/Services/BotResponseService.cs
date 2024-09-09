@@ -21,10 +21,13 @@ namespace E_Commerce_Bot.Services
             this.localization = localization;
             _categoryRepo = categoryRepo;
         }
-
-        public Task SendContactRequest(long userId)
+        #region Register
+        public async Task SendContactRequest(long userId)
         {
-            throw new NotImplementedException();
+            var message = await _botClient.SendTextMessageAsync(
+            text: localization.GetValue(Recources.Message.SendContactRequest),
+            replyMarkup: new ReplyKeyboardMarkup(KeyboardButton.WithRequestContact(localization.GetValue(Button.ContactRequest))),
+            chatId: userId);
         }
 
         public async Task SendGreeting(long userId)
@@ -46,32 +49,14 @@ namespace E_Commerce_Bot.Services
                 new KeyboardButton("O'zbekcha🇺🇿"),
                 new KeyboardButton("English🇬🇧"),
                 new KeyboardButton("Русский🇷🇺")
-            });
+            })
+            { ResizeKeyboard = true };
             var message = await _botClient.SendTextMessageAsync(
                text: localization.GetValue(Recources.Message.SelectLanguage),
                chatId: userId,
                replyMarkup: markup);
         }
-
-        private ReplyKeyboardMarkup GetReplyKeyboardMarkup(string[][] buttons)
-        {
-            var markup = new KeyboardButton[buttons.GetLength(0)][];
-
-            for (int i = 0; i < buttons.GetLength(0); i++)
-            {
-                markup[i] = buttons[i].Select(x => new KeyboardButton(localization.GetValue(x))).ToArray();
-            }
-            return new ReplyKeyboardMarkup(markup);
-        }
-        private string GetCurrentLanguage(string userLanguage, string language)
-            => string.Equals(userLanguage, language, StringComparison.CurrentCultureIgnoreCase) ? "✅" : string.Empty;
-
-        public async Task InValidPhoneNumber(long userId)
-        {
-            await _botClient.SendTextMessageAsync(
-                     userId,
-                   $"{localization.GetValue(Recources.Message.InValidPhoneNumber)} +998912345678");
-        }
+        #endregion       
 
         public async Task SendMessages(long userId, string message)
         {
@@ -80,7 +65,7 @@ namespace E_Commerce_Bot.Services
                    $"{message}", replyMarkup: new ReplyKeyboardRemove());
         }
 
-        public async Task SenMainMenu(long userId)
+        public async Task SendMainMenu(long userId)
         {
             var matrix = new[]
             {
@@ -95,17 +80,18 @@ namespace E_Commerce_Bot.Services
                 replyMarkup: GetReplyKeyboardMarkup(matrix));
         }
 
+        #region OrderMenu
         public async Task SendDeliveryTypes(long userId)
         {
             var matrix = new[]
            {
-                Button.Delivery,
-                Button.PickUp
+               new[] {Button.Delivery, Button.PickUp },
+               new[]{ localization.GetValue(Button.Back)}
             };
             await _botClient.SendTextMessageAsync(
                 userId,
                 $"{localization.GetValue(Recources.Message.SelectDeliveryType)}",
-                replyMarkup: GetReplyKeyboardMarkup(new[] { matrix }));
+                replyMarkup: GetReplyKeyboardMarkup(matrix));
         }
 
         public async Task SendLocationRequest(long userId)
@@ -171,6 +157,42 @@ namespace E_Commerce_Bot.Services
              userId,
              $"{localization.GetValue(Recources.Message.OnCommentToOrder)}",
              replyMarkup: GetReplyKeyboardMarkup(matrix));
+        }
+        #endregion
+
+        #region Settings
+        public async Task SendSettingsMenu(long userId)
+        {
+            var matrix = new[]
+           {
+                new[] { Button.ChangeLanguage, Button.ChangePhone },
+                new[]{localization.GetValue(Button.Back)}
+            };
+
+            await _botClient.SendTextMessageAsync(
+                userId,
+                $"{localization.GetValue(Recources.Button.Settings)}",
+                replyMarkup: GetReplyKeyboardMarkup(matrix));
+        }
+        #endregion
+        private ReplyKeyboardMarkup GetReplyKeyboardMarkup(string[][] buttons)
+        {
+            var markup = new KeyboardButton[buttons.GetLength(0)][];
+
+            for (int i = 0; i < buttons.GetLength(0); i++)
+            {
+                markup[i] = buttons[i].Select(x => new KeyboardButton(localization.GetValue(x))).ToArray();
+            }
+            return new ReplyKeyboardMarkup(markup) { ResizeKeyboard = true };
+        }
+        private string GetCurrentLanguage(string userLanguage, string language)
+            => string.Equals(userLanguage, language, StringComparison.CurrentCultureIgnoreCase) ? "✅" : string.Empty;
+
+        public async Task InValidPhoneNumber(long userId)
+        {
+            await _botClient.SendTextMessageAsync(
+                     userId,
+                   $"{localization.GetValue(Recources.Message.InValidPhoneNumber)} +998912345678");
         }
     }
 }

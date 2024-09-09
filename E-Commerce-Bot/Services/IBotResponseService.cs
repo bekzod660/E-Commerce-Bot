@@ -6,7 +6,8 @@
         Task SendLangugaes(long userId);
         Task SendContactRequest(long userId);
         Task InValidPhoneNumber(long userId);
-        Task SenMainMenu(long userId);
+        Task SendMainMenu(long userId);
+        Task SendSettingsMenu(long userId);
         Task SendMessages(long userId, string message);
         Task SendDeliveryTypes(long userId);
         Task SendLocationRequest(long userId);

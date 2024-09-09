@@ -45,6 +45,7 @@ namespace E_Commerce_Bot.Services.Bot
 
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
+
             throw new NotImplementedException();
         }
 
@@ -80,7 +81,7 @@ namespace E_Commerce_Bot.Services.Bot
             }
             catch (Exception ex)
             {
-
+                await _botResponseService.SendMainMenu(user.Id);
             }
         }
 

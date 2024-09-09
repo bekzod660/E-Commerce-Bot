@@ -26,16 +26,16 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
         public async Task HandleOrderButtonAsync(Entities.User user, Message message)
         {
             user.UserProcess = UserProcess.selectDeliveryType;
-            user.Basket.Items.Clear();
+            //user.Basket.Items.Clear();
             await _userRepo.UpdateAsync(user);
             await _botResponseService.SendDeliveryTypes(user.Id);
         }
         public async Task HandleInDeliveryTypeRequestAsync(Entities.User user, Message message)
         {
-            if (user.ProcessHelper is null)
-            {
-                user.ProcessHelper = new ProcessHelper();
-            }
+            //if (user.ProcessHelper is null)
+            //{
+            //    user.ProcessHelper = new ProcessHelper();
+            //}
             if (message.Text == $"{localization.GetValue(Recources.Button.Delivery)}")
             {
                 user.ProcessHelper.OrderType = OrderType.Delivery;
@@ -50,7 +50,12 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 await _userRepo.UpdateAsync(user);
                 await _botResponseService.SendCategories(user.Id, user.Language);
             }
-
+            else
+            {
+                user.UserProcess = UserProcess.mainMenu;
+                await _userRepo.UpdateAsync(user);
+                await _botResponseService.SendMainMenu(user.Id);
+            }
         }
         public async Task HandleLocationRequestAsync(Entities.User user, Message message)
         {
@@ -103,9 +108,10 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             }
             else
             {
-
+                user.UserProcess = UserProcess.mainMenu;
+                await _userRepo.UpdateAsync(user);
+                await _botResponseService.SendMainMenu(user.Id);
             }
-
         }
 
         public async Task HandleAmountRequestAsync(Entities.User user, Message message)

@@ -13,6 +13,8 @@
         inPickUp,
         locationRequest,
         inCategory,
+        inSettings,
+        SelectLanguageInSettings,
         inProduct,
         amountRequest,
         onCommentOrder,

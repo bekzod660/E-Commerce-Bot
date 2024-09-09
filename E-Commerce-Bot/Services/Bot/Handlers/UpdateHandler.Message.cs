@@ -14,15 +14,12 @@ namespace E_Commerce_Bot.Services.Bot
         {
             if (message is null) return;
             Entities.User user = await _userRepo.GetByIdAsync(message.Chat.Id);
-            if (user is null)
+            if (message.Text == "/start" && user.UserProcess == UserProcess.sendGreeting)
             {
-                if (message.Text == "/start" && user.UserProcess == UserProcess.sendGreeting)
-                {
-                    await _botResponseService.SendGreeting(user.Id);
-                    await _botResponseService.SendLangugaes(user.Id);
-                    user.UserProcess = UserProcess.contactRequest;
-                    await _userRepo.UpdateAsync(user);
-                }
+                await _botResponseService.SendGreeting(user.Id);
+                await _botResponseService.SendLangugaes(user.Id);
+                user.UserProcess = UserProcess.selectLanguage;
+                await _userRepo.UpdateAsync(user);
             }
             else if (message.Text == _localization.GetValue(Button.Basket))
             {
@@ -36,7 +33,7 @@ namespace E_Commerce_Bot.Services.Bot
             {
                 await HandleUserProcess(user, botClient, message);
             }
-            else
+            else if (user is null)
             {
                 await HandleUnknownCommand(user, message);
             }
@@ -46,10 +43,13 @@ namespace E_Commerce_Bot.Services.Bot
         {
             Task res = user.UserProcess switch
             {
+                UserProcess.selectLanguage => HandleSelectLanguageAsync(user, message),
                 UserProcess.contactRequest => HandleContactRequestAsync(user, message),
                 UserProcess.verifyCode => HandleVerifyCodeAsync(user, botClient, message),
                 UserProcess.fullName => HandleFullNameRequestAsync(user, message),
                 UserProcess.mainMenu => HandleMainMenuAsync(user, message),
+                UserProcess.inSettings => HandleSettingsAsync(user, message),
+                UserProcess.SelectLanguageInSettings => HandleSelectLanguageInSettingsAsync(user, message),
                 UserProcess.selectDeliveryType => _orderHandler.HandleInDeliveryTypeRequestAsync(user, message),
                 UserProcess.locationRequest => _orderHandler.HandleLocationRequestAsync(user, message),
                 UserProcess.inCategory => _orderHandler.HandleInCategoryAsync(user, message),
@@ -64,6 +64,46 @@ namespace E_Commerce_Bot.Services.Bot
             await res;
         }
 
+        #region ActionsInSettings
+        private async Task HandleSelectLanguageInSettingsAsync(User user, Message message)
+        {
+            user.UserProcess = UserProcess.mainMenu;
+            user.Language = message.Text switch
+            {
+                "O'zbekcha🇺🇿" => "uz",
+                "English🇬🇧" => "en",
+                "Русский🇷🇺" => "ru"
+            };
+            SetCulture.SetUserCulture(user.Language);
+            await _botResponseService.SendMainMenu(user.Id);
+            await _userRepo.UpdateAsync(user);
+        }
+        private async Task HandleSettingsAsync(User user, Message message)
+        {
+            if (message.Text == _localization.GetValue(Button.ChangeLanguage))
+            {
+                await _settingsHandler.HandleChangeLanguageAsync(user, message);
+            }
+            else if (message.Text == _localization.GetValue(Button.ChangePhone))
+            {
+                await _settingsHandler.HandleSettingsAsync(user, message);
+            }
+        }
+        #endregion
+
+        #region RegisterProcess
+        private async Task HandleSelectLanguageAsync(User user, Message message)
+        {
+            user.UserProcess = UserProcess.contactRequest;
+            user.Language = message.Text switch
+            {
+                "O'zbekcha🇺🇿" => "uz",
+                "English🇬🇧" => "en",
+                "Русский🇷🇺" => "ru"
+            };
+            await _botResponseService.SendContactRequest(user.Id);
+            await _userRepo.UpdateAsync(user);
+        }
         private async Task HandleVerifyCodeAsync(User user, ITelegramBotClient botClient, Message message)
         {
             if (string.Equals(user.Code, message.Text))
@@ -78,15 +118,57 @@ namespace E_Commerce_Bot.Services.Bot
                 await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.ErrorCode));
             }
         }
+        private async Task HandleContactRequestAsync(User user, Message message)
+        {
+            string code = GetSmsCode.Get();// when sms working
+            string testCode = "1111";
+            if (message.Contact is null)
+            {
+                if (Regex.Match(message.Text, @"(?:[+][9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})").Success)
+                {
+
+                    //await SendSms(message.Contact.PhoneNumber, code); //avaible when sms working
+                    await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
+                    user.UserProcess = UserProcess.verifyCode;
+                    user.Code = testCode;
+                    user.PhoneNumber = message.Text;
+                    await _userRepo.UpdateAsync(user);
+                }
+                else
+                {
+                    await _botResponseService.InValidPhoneNumber(user.Id);
+                }
+            }
+            else
+            {
+                //  await SendSms(message.Contact.PhoneNumber, code);
+                await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
+                user.UserProcess = UserProcess.verifyCode;
+                user.Code = testCode;
+                user.PhoneNumber = message.Contact.PhoneNumber;
+                await _userRepo.UpdateAsync(user);
+            }
+
+        }
+        private async Task HandleFullNameRequestAsync(User user, Message message)
+        {
+            user.Name = message.Text;
+            user.UserProcess = UserProcess.mainMenu;
+            await _userRepo.UpdateAsync(user);
+            await _botResponseService.SendMainMenu(user.Id);
+        }
+        #endregion
+
+
         private async Task HandleMainMenuAsync(User user, Message message)
         {
             if (message.Text == _localization.GetValue(Button.Order))
             {
-                _orderHandler.HandleOrderButtonAsync(user, message);
+                await _orderHandler.HandleOrderButtonAsync(user, message);
             }
             else if (message.Text == _localization.GetValue(Button.Settings))
             {
-                _settingsHandler.HandleSettingsAsync(user, message);
+                await _settingsHandler.HandleSettingsAsync(user, message);
             }
             else if (message.Text == $"{_localization.GetValue(Button.ContactUs)}")
             {
@@ -121,52 +203,27 @@ namespace E_Commerce_Bot.Services.Bot
         {
             throw new NotImplementedException();
         }
-        private async Task HandleContactRequestAsync(User user, Message message)
-        {
-            string code = GetSmsCode.Get();// when sms working
-            string testCode = "1111";
-            if (message.Contact is null)
-            {
-                if (Regex.Match(message.Text, @"(?:[+][9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})").Success)
-                {
 
-                    //await SendSms(message.Contact.PhoneNumber, code); //avaible when sms working
-                    await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
-                    user.UserProcess = UserProcess.verifyCode;
-                    user.Code = code;
-                    user.PhoneNumber = message.Text;
-                    await _userRepo.UpdateAsync(user);
-                }
-                else
-                {
-                    await _botResponseService.InValidPhoneNumber(user.Id);
-                }
-            }
-            else
-            {
-                //  await SendSms(message.Contact.PhoneNumber, code);
-                await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
-                user.UserProcess = UserProcess.verifyCode;
-                user.Code = code;
-                user.PhoneNumber = message.Contact.PhoneNumber;
-                await _userRepo.UpdateAsync(user);
-            }
-
-        }
-
-        private async Task HandleFullNameRequestAsync(User user, Message message)
-        {
-            user.Name = message.Text;
-            user.UserProcess = UserProcess.mainMenu;
-            await _userRepo.UpdateAsync(user);
-            await _botResponseService.SenMainMenu(user.Id);
-        }
 
         private async Task HandleUnknownCommand(User user, Message message)
         {
-            user.UserProcess = UserProcess.mainMenu;
+            if (user is null)
+            {
+                await _botResponseService.SendGreeting(user.Id);
+                await _botResponseService.SendLangugaes(user.Id);
+                user.UserProcess = UserProcess.selectLanguage;
+            }
+            else if (user.PhoneNumber is null)
+            {
+                await _botResponseService.SendContactRequest(user.Id);
+                user.UserProcess = UserProcess.selectLanguage;
+            }
+            else
+            {
+                await _botResponseService.SendMainMenu(user.Id);
+                user.UserProcess = UserProcess.mainMenu;
+            }
             await _userRepo.UpdateAsync(user);
-            await _botResponseService.SenMainMenu(user.Id);
         }
         private async Task SendSms(string phoneNumber, string code)
         {

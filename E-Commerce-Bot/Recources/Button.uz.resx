@@ -126,6 +126,9 @@
   <data name="btn.comment.order" xml:space="preserve">
     <value>Qo'shimcha fikr yoq</value>
   </data>
+  <data name="btn.contact" xml:space="preserve">
+    <value>Raqam yuborish</value>
+  </data>
   <data name="btn.contactUs" xml:space="preserve">
     <value>☎️ Biz bilan aloqa</value>
   </data>
@@ -146,6 +149,12 @@
   </data>
   <data name="btn.settings" xml:space="preserve">
     <value>⚙️ Sozlamalar</value>
+  </data>
+  <data name="btn.settings.language" xml:space="preserve">
+    <value>Tilni o'zgartirish</value>
+  </data>
+  <data name="btn.settings.phone" xml:space="preserve">
+    <value>Telefon raqamni o'zgartirish</value>
   </data>
   <data name="btn.start.order" xml:space="preserve">
     <value>🚖 Buyurtuma berish</value>
