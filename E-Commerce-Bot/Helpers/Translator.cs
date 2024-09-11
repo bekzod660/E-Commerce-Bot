@@ -9,12 +9,7 @@ namespace E_Commerce_Bot.Helpers
         public static List<string> Translate(string language, List<Category> translations)
         {
             List<string> result = new List<string>();
-            string property = language switch
-            {
-                "uz" => "Name_Uz",
-                "eu" => "Name_Ru",
-                "en" => "Name_En",
-            };
+            string property = GetPropertyName(language);
 
             foreach (var item in translations)
             {
@@ -35,10 +30,10 @@ namespace E_Commerce_Bot.Helpers
             }
             return result;
         }
-        public static List<string> Translate(string property, List<Product> translations)
+        public static List<string> Translate(string language, List<Product> translations)
         {
             List<string> result = new List<string>();
-
+            string property = GetPropertyName(language);
             foreach (var item in translations)
             {
                 PropertyInfo prop = item.GetType().GetProperty(property);
@@ -59,16 +54,36 @@ namespace E_Commerce_Bot.Helpers
             return result;
         }
 
-        public static TranslatedProduct Translate(this Product product, string language)
+        public static ProductDto Translate(this Product product, string language)
         {
-            string nameProperty = (product.GetType().GetProperty($"name_{language}")).GetValue(product).ToString();
-            string descriptionProperty = (product.GetType().GetProperty($"description_{language}")).GetValue(product).ToString();
-            return new TranslatedProduct
+            string property = GetPropertyName(language);
+            string propertyDes = GetPropertyDescription(language);
+            string nameProperty = (product.GetType().GetProperty(property)).GetValue(product).ToString();
+            string descriptionProperty = (product.GetType().GetProperty(propertyDes)).GetValue(product).ToString();
+            return new ProductDto
             {
                 Name = nameProperty,
                 Description = descriptionProperty,
                 ImagePath = product.ImagePath,
                 Price = product.Price,
+            };
+        }
+        private static string GetPropertyName(string language)
+        {
+            return language switch
+            {
+                "uz" => "Name_Uz",
+                "eu" => "Name_Ru",
+                "en" => "Name_En",
+            };
+        }
+        private static string GetPropertyDescription(string language)
+        {
+            return language switch
+            {
+                "uz" => "Description_Uz",
+                "eu" => "Description_Ru",
+                "en" => "Description_En",
             };
         }
     }

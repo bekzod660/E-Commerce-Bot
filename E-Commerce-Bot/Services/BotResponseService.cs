@@ -1,4 +1,5 @@
-﻿using E_Commerce_Bot.Entities;
+﻿using E_Commerce_Bot.DTOs;
+using E_Commerce_Bot.Entities;
 using E_Commerce_Bot.Enums;
 using E_Commerce_Bot.Helpers;
 using E_Commerce_Bot.Persistence.Repositories;
@@ -134,19 +135,24 @@ namespace E_Commerce_Bot.Services
 
         public async Task SendProductsAsync(long userId, List<string> products)
         {
+            var matrix = new[]
+            {
+                new[]{Button.Back, Button.Basket},
+                products.ToArray()
+            };
             await _botClient.SendTextMessageAsync(
                userId,
                $"{localization.GetValue(Recources.Message.Incategoory)}",
-               replyMarkup: GetReplyKeyboardMarkup(new[] { products.ToArray() }));
+               replyMarkup: GetReplyKeyboardMarkup(matrix));
         }
 
-        public async Task SendProduct(long userId)
+        public async Task SendProductAsync(long userId, ProductDto product)
         {
-            //await _botClient.SendPhotoAsync(
-            //        userId,
-            //        photo: InputFile.FromUri("https://scontent.fbhk1-3.fna.fbcdn.net/v/t1.6435-9/101732775_3166364486746355_5046697266992119808_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=c2f564&_nc_ohc=X8LV8qIcS1UAX9h5lVm&_nc_ht=scontent.fbhk1-3.fna&oh=00_AfCtHJrBx1U0UT87jgGl-8_1kDW5MncNESKhdyHmBgMD9Q&oe=6602D164"),
-            //        caption: $"{product.Name}({product.Description})\nNarxi: {product.Price}"
-            //        );
+            await _botClient.SendPhotoAsync(
+                    userId,
+                    photo: Telegram.Bot.Types.InputFile.FromUri("https://scontent.fbhk1-3.fna.fbcdn.net/v/t1.6435-9/101732775_3166364486746355_5046697266992119808_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=c2f564&_nc_ohc=X8LV8qIcS1UAX9h5lVm&_nc_ht=scontent.fbhk1-3.fna&oh=00_AfCtHJrBx1U0UT87jgGl-8_1kDW5MncNESKhdyHmBgMD9Q&oe=6602D164"),
+                    caption: $"{product.Name}({product.Description})\nNarxi: {product.Price}"
+                    );
         }
 
         public async Task SendAmountRequestAsync(long userId)

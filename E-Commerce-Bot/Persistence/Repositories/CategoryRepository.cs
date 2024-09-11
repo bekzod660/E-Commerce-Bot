@@ -50,9 +50,9 @@ namespace E_Commerce_Bot.Persistence.Repositories
         {
             return language switch
             {
-                "uz" => await _db.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name_Uz == text),
-                "ru" => await _db.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name_Ru == text),
-                "en" => await _db.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name_En == text),
+                "uz" => await _db.Categories.AsNoTracking().Include(e => e.Products).FirstOrDefaultAsync(x => x.Name_Uz == text),
+                "ru" => await _db.Categories.AsNoTracking().Include(e => e.Products).FirstOrDefaultAsync(x => x.Name_Ru == text),
+                "en" => await _db.Categories.AsNoTracking().Include(e => e.Products).FirstOrDefaultAsync(x => x.Name_En == text),
             };
         }
     }

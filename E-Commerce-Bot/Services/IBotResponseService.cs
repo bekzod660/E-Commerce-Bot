@@ -1,4 +1,5 @@
-﻿using E_Commerce_Bot.Entities;
+﻿using E_Commerce_Bot.DTOs;
+using E_Commerce_Bot.Entities;
 
 namespace E_Commerce_Bot.Services
 {
@@ -15,7 +16,7 @@ namespace E_Commerce_Bot.Services
         Task SendLocationRequestAsync(long userId);
         Task SendCategoriesAsync(long userId, string language);
         Task SendProductsAsync(long userId, List<string> products);
-        Task SendProduct(long userId);
+        Task SendProductAsync(long userId, ProductDto productDto);
         Task SendAmountRequestAsync(long userId);
         Task SendCommentRequest(long userId);
         #region Admin

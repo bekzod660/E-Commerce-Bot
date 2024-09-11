@@ -86,7 +86,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 Category category = await _categoryRepo.GetByNameAsync(message.Text, user.Language);
                 if (category is Category)
                 {
-                    List<string> products = Translator.Translate($"name_{user.Language}", category.Products.ToList());
+                    List<string> products = Translator.Translate(user.Language, category.Products.ToList());
                     await _botResponseService.SendProductsAsync(user.Id, products);
                 }
                 else
