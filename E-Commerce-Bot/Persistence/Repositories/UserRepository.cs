@@ -43,6 +43,7 @@ namespace E_Commerce_Bot.Persistence.Repositories
         {
             var user = await _db.Users.Include(x => x.Basket)
                                         .Include(x => x.ProcessHelper)
+                                        .Include(x => x.Basket)
                                         .FirstOrDefaultAsync(e => e.Id == id);
             return user;
         }

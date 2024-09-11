@@ -36,7 +36,7 @@ namespace E_Commerce_Bot.Services.Bot
             }
             else if (user is null)
             {
-                await HandleUnknownCommand(user, message);
+                await HandleUnknownCommandAsync(user, message);
             }
 
         }
@@ -61,7 +61,7 @@ namespace E_Commerce_Bot.Services.Bot
                 UserState.onCommentOrder => _orderHandler.HandleOnCommentOrderAsync(user, message),
                 UserState.onSelectPaymentType => _orderHandler.HandleOnSelectPaymentTypeAsync(user, message),
                 UserState.atConfirmationOrder => _orderHandler.HandleAtConfirmationOrderAsync(user, message),
-                _ => HandleUnknownCommand(user, message)
+                _ => HandleUnknownCommandAsync(user, message)
             };
             await res;
         }
@@ -133,6 +133,7 @@ namespace E_Commerce_Bot.Services.Bot
                 "English🇬🇧" => "en",
                 "Русский🇷🇺" => "ru"
             };
+            SetCulture.SetUserCulture(user.Language);
             await _botResponseService.SendContactRequestAsync(user.Id);
             await _userRepo.UpdateAsync(user);
         }
@@ -249,7 +250,7 @@ namespace E_Commerce_Bot.Services.Bot
         }
 
 
-        private async Task HandleUnknownCommand(User user, Message message)
+        private async Task HandleUnknownCommandAsync(User user, Message message)
         {
             if (user is null)
             {

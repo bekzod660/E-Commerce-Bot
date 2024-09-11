@@ -108,15 +108,15 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 user.UserState = UserState.amountRequest;
                 user.ProcessHelper.ProductId = product.Id;
                 user.ProcessHelper.CategoryId = product.CategoryId;
-                await _userRepo.UpdateAsync(user);
+                await _botResponseService.SendProductAsync(user.Id, product.Translate(user.Language));
                 await _botResponseService.SendAmountRequestAsync(user.Id);
             }
             else
             {
                 user.UserState = UserState.mainMenu;
-                await _userRepo.UpdateAsync(user);
                 await _botResponseService.SendMainMenuAsync(user.Id);
             }
+            await _userRepo.UpdateAsync(user);
         }
 
         public async Task HandleAmountRequestAsync(Entities.User user, Message message)
@@ -142,7 +142,8 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 }
                 await _botResponseService.SendCategoriesAsync(user.Id, user.Language);
             }
-
+            user.UserState = UserState.inCategory;
+            await _userRepo.UpdateAsync(user);
         }
 
         public async Task HandleAtConfirmationOrderAsync(Entities.User user, Message message)

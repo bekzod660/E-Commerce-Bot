@@ -32,9 +32,10 @@ namespace E_Commerce_Bot.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Product> GetByIdAsync(int id)
+        public async Task<Product> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _db.Products.Include(x => x.Category)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public Task<Product> GetByIdAsync(long id)
@@ -45,9 +46,9 @@ namespace E_Commerce_Bot.Persistence.Repositories
         {
             return language switch
             {
-                "uz" => await _db.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Name_Uz == text),
-                "ru" => await _db.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Name_Ru == text),
-                "en" => await _db.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Name_En == text),
+                "uz" => await _db.Products.AsNoTracking().Include(x => x.Category).FirstOrDefaultAsync(x => x.Name_Uz == text),
+                "ru" => await _db.Products.AsNoTracking().Include(x => x.Category).FirstOrDefaultAsync(x => x.Name_Ru == text),
+                "en" => await _db.Products.AsNoTracking().Include(x => x.Category).FirstOrDefaultAsync(x => x.Name_En == text),
             };
         }
         public Task<bool> UpdateAsync(Product obj)

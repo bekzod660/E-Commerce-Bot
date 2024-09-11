@@ -65,7 +65,8 @@ namespace E_Commerce_Bot.Services.Bot
                     Name = _user.FirstName + _user.LastName,
                     Language = _user.LanguageCode,
                     UserState = UserState.sendGreeting,
-                    ProcessHelper = new Entities.ProcessHelper()
+                    ProcessHelper = new Entities.ProcessHelper(),
+                    Basket = new Entities.Basket()
                 });
                 SetCulture.SetUserCulture(_user.LanguageCode);
             }
