@@ -8,7 +8,7 @@ namespace E_Commerce_Bot.Entities
         public required string Name { get; set; }
         public required string Language { get; set; }
         public string? PhoneNumber { get; set; }
-        public UserProcess UserProcess { get; set; }
+        public UserState UserState { get; set; }
         public string? Code { get; set; }
         public Basket Basket { get; set; } = null!;
         public int BasketId { get; set; }

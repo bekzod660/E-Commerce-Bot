@@ -17,8 +17,12 @@
         public static string Incategoory = "msg.incategory";
 
         public static string InAmount = "msg.amount";
-        public static string EmptyBasket = "msg.empty.basket";
         public static string OnCommentToOrder = "msg.comment.order";
 
+        #region Basket
+        public static string EmptyBasket = "msg.empty.basket";
+        public static string Basket = "msg.basket";
+        public static string BasketAll = "msg.all.basket";
+        #endregion
     }
 }

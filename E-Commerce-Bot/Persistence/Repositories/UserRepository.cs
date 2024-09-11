@@ -52,6 +52,11 @@ namespace E_Commerce_Bot.Persistence.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<User> GetByNameAsync(string text, string language)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> UpdateAsync(User user)
         {
             _db.Users.Update(user);

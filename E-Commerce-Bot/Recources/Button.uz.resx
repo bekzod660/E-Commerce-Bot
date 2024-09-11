@@ -126,6 +126,9 @@
   <data name="btn.branches" xml:space="preserve">
     <value>🏘 Barcha filiallar</value>
   </data>
+  <data name="btn.categories" xml:space="preserve">
+    <value>Categoriyalar</value>
+  </data>
   <data name="btn.comment.order" xml:space="preserve">
     <value>Qo'shimcha fikr yoq</value>
   </data>
@@ -135,8 +138,14 @@
   <data name="btn.contactUs" xml:space="preserve">
     <value>☎️ Biz bilan aloqa</value>
   </data>
+  <data name="btn.delete.basket" xml:space="preserve">
+    <value>❌</value>
+  </data>
   <data name="btn.delivery" xml:space="preserve">
     <value>🚖 Yetkazib berish</value>
+  </data>
+  <data name="btn.empty.basket" xml:space="preserve">
+    <value>🔄 Tozalash</value>
   </data>
   <data name="btn.feedback" xml:space="preserve">
     <value>✍️ Fikr bildirish</value>
@@ -153,8 +162,14 @@
   <data name="btn.order" xml:space="preserve">
     <value>🛍 Buyurtma berish</value>
   </data>
+  <data name="btn.orders" xml:space="preserve">
+    <value>📋Orders</value>
+  </data>
   <data name="btn.pickup" xml:space="preserve">
     <value>🏃 Olib ketish</value>
+  </data>
+  <data name="btn.products" xml:space="preserve">
+    <value>Ovqatlar</value>
   </data>
   <data name="btn.settings" xml:space="preserve">
     <value>⚙️ Sozlamalar</value>

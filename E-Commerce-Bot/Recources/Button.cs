@@ -6,7 +6,7 @@
         public static string ContactRequest = "btn.contact";
 
         public static string Back = "btn.back";
-        public static string Basket = "btn.basket";
+
         public static string StartOrder = "btn.start.order";
         #region MainMenu
         public static string Order = "btn.order";
@@ -28,10 +28,14 @@
         public static string ChangePhone = "btn.settings.phone";
         #endregion
 
+        #region Basket
+        public static string Basket = "btn.basket";
+        public static string EmptyBasket = "btn.empty.basket";
+        public static string DeleteProductFromBasket = "btn.delete.basket";
+        #endregion
         #region Admin
-        public static string AddProduct = "btn.addProduct";
-        public static string AddCategory = "btn.addCategory";
-        public static string SettingsAdmin = "btn.admin.settings";
+        public static string Products = "btn.products";
+        public static string Categories = "btn.categories";
         public static string Orders = "btn.orders";
         #endregion
     }

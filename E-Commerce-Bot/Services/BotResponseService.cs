@@ -1,8 +1,11 @@
 ﻿using E_Commerce_Bot.Entities;
+using E_Commerce_Bot.Enums;
 using E_Commerce_Bot.Helpers;
 using E_Commerce_Bot.Persistence.Repositories;
 using E_Commerce_Bot.Recources;
+using System.Text;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace E_Commerce_Bot.Services
@@ -10,11 +13,11 @@ namespace E_Commerce_Bot.Services
     public class BotResponseService : IBotResponseService
     {
         private readonly ITelegramBotClient _botClient;
-        private readonly IBaseRepository<User> _userRepo;
+        private readonly IBaseRepository<Entities.User> _userRepo;
         private readonly ILocalizationHandler localization;
         private readonly IBaseRepository<Category> _categoryRepo;
 
-        public BotResponseService(ITelegramBotClient botClient, IBaseRepository<User> userRepo, ILocalizationHandler localization, IBaseRepository<Category> categoryRepo)
+        public BotResponseService(ITelegramBotClient botClient, IBaseRepository<Entities.User> userRepo, ILocalizationHandler localization, IBaseRepository<Category> categoryRepo)
         {
             _botClient = botClient;
             _userRepo = userRepo;
@@ -22,15 +25,15 @@ namespace E_Commerce_Bot.Services
             _categoryRepo = categoryRepo;
         }
         #region Register
-        public async Task SendContactRequest(long userId)
+        public async Task SendContactRequestAsync(long userId)
         {
             var message = await _botClient.SendTextMessageAsync(
             text: localization.GetValue(Recources.Message.SendContactRequest),
-            replyMarkup: new ReplyKeyboardMarkup(KeyboardButton.WithRequestContact(localization.GetValue(Button.ContactRequest))),
+            replyMarkup: new ReplyKeyboardMarkup(KeyboardButton.WithRequestContact(localization.GetValue(Button.ContactRequest))) { ResizeKeyboard = true },
             chatId: userId);
         }
 
-        public async Task SendGreeting(long userId)
+        public async Task SendGreetingAsync(long userId)
         {
             var user = await _userRepo.GetByIdAsync(userId);
             var name = user.Name;
@@ -42,7 +45,7 @@ namespace E_Commerce_Bot.Services
                 chatId: userId);
         }
 
-        public async Task SendLangugaes(long userId)
+        public async Task SendLangugaesAsync(long userId)
         {
             var markup = new ReplyKeyboardMarkup(new[]
             {
@@ -58,14 +61,15 @@ namespace E_Commerce_Bot.Services
         }
         #endregion       
 
-        public async Task SendMessages(long userId, string message)
+        public async Task SendMessageAsync(long userId, string message)
         {
             await _botClient.SendTextMessageAsync(
                      userId,
-                   $"{message}", replyMarkup: new ReplyKeyboardRemove());
+                   localization.GetValue(message),
+                   replyMarkup: new ReplyKeyboardRemove());
         }
 
-        public async Task SendMainMenu(long userId)
+        public async Task SendMainMenuAsync(long userId)
         {
             var matrix = new[]
             {
@@ -82,7 +86,7 @@ namespace E_Commerce_Bot.Services
         }
 
         #region OrderMenu
-        public async Task SendDeliveryTypes(long userId)
+        public async Task SendDeliveryTypesAsync(long userId)
         {
             var matrix = new[]
            {
@@ -95,7 +99,7 @@ namespace E_Commerce_Bot.Services
                 replyMarkup: GetReplyKeyboardMarkup(matrix));
         }
 
-        public async Task SendLocationRequest(long userId)
+        public async Task SendLocationRequestAsync(long userId)
         {
             var markup = new ReplyKeyboardMarkup(new[]
             {
@@ -117,10 +121,10 @@ namespace E_Commerce_Bot.Services
                replyMarkup: markup);
         }
 
-        public async Task SendCategories(long userId, string language)
+        public async Task SendCategoriesAsync(long userId, string language)
         {
             List<Category> categories = await _categoryRepo.GetAllAsync();
-            List<string> _categories = Translator.Translate($"name_{language}", categories);
+            List<string> _categories = Translator.Translate(language, categories);
             await _botClient.SendTextMessageAsync(
                userId,
                $"{localization.GetValue(Recources.Message.Incategoory)}",
@@ -128,7 +132,7 @@ namespace E_Commerce_Bot.Services
                    localization.GetValue(Button.Basket) },_categories.ToArray() }));
         }
 
-        public async Task SendProducts(long userId, List<string> products)
+        public async Task SendProductsAsync(long userId, List<string> products)
         {
             await _botClient.SendTextMessageAsync(
                userId,
@@ -145,7 +149,7 @@ namespace E_Commerce_Bot.Services
             //        );
         }
 
-        public async Task SendAmountRequest(long userId)
+        public async Task SendAmountRequestAsync(long userId)
         {
             var matrix = new string[][]
               {
@@ -176,7 +180,7 @@ namespace E_Commerce_Bot.Services
         #endregion
 
         #region Settings
-        public async Task SendSettingsMenu(long userId, string userLanguage)
+        public async Task SendSettingsMenuAsync(long userId, string userLanguage)
         {
             var markup = new ReplyKeyboardMarkup(new[]
             {
@@ -200,7 +204,7 @@ namespace E_Commerce_Bot.Services
                 replyMarkup: markup);
         }
         #endregion
-        public async Task InValidPhoneNumber(long userId)
+        public async Task InValidPhoneNumberAsync(long userId)
         {
             await _botClient.SendTextMessageAsync(
                      userId,
@@ -232,20 +236,76 @@ namespace E_Commerce_Bot.Services
             var buttonMatrix = new InlineKeyboardButton[matrix.GetLength(0)][];
             for (int i = 0; i < matrix.GetLength(0); i++)
                 buttonMatrix[i] = matrix[i]
-                    .Select(x => InlineKeyboardButton.WithCallbackData(x, x)).ToArray();
+                    .Select(x => InlineKeyboardButton.WithCallbackData(localization.GetValue(x), x)).ToArray();
 
             return new InlineKeyboardMarkup(buttonMatrix);
         }
+        #region Admin 
         public async Task SendAdminMainMenu(long userId)
         {
             var matrix = new[]
             {
-                new[]{"Product Qo'shish"}
+                new[]{ Button.Categories},
+                new[]{Button.Orders, Button.Settings}
             };
-            _botClient.SendTextMessageAsync(
+            await _botClient.SendTextMessageAsync(
              chatId: userId,
-             text: "Salom",
-             replyMarkup: GetInlineKeyboard(matrix));
+             text: "<b>Salom</b>",
+             replyMarkup: GetInlineKeyboard(matrix),
+             parseMode: ParseMode.Html);
         }
+        #endregion
+        public async Task SendInlineCategoryAsync(long userId, string language)
+        {
+            List<Category> categories = await _categoryRepo.GetAllAsync();
+            List<string> _categories = Translator.Translate(language, categories);
+            await _botClient.SendTextMessageAsync(
+               userId,
+               $"{localization.GetValue(Recources.Message.Incategoory)}",
+               replyMarkup: GetInlineKeyboard(new[] { new[] { localization.GetValue(Button.Back) }, _categories.ToArray() }));
+        }
+
+        #region Basket
+        public async Task SendProductsBasket(long userId, Entities.User user)
+        {
+            await _botClient.SendTextMessageAsync(
+               userId,
+               localization.GetValue(Recources.Message.Basket));
+            var products = new StringBuilder(localization.GetValue(Button.Basket));
+            foreach (var item in user.Basket.Items)
+            {
+                products = products.Append($"\n{item.Product.Translate(user.Language).Name}\n {item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
+            }
+            var buttons = new List<List<KeyboardButton>>();
+            var _products = user.Basket.Items.Select(x => x.Product.Name_Uz);
+            foreach (var product in _products)
+            {
+                buttons.Add(
+                    new List<KeyboardButton>()
+                        {
+                            new KeyboardButton($"❌ {product}")
+                        });
+            }
+            buttons.Add(
+                new List<KeyboardButton>()
+                {
+                            new KeyboardButton(localization.GetValue(Button.Back)),
+                            new KeyboardButton(localization.GetValue(Button.EmptyBasket))
+                 });
+            buttons.Add(
+                new List<KeyboardButton>()
+                {
+                            new KeyboardButton("🚖 Buyurtuma berish")
+                 });
+            double totalPrice = user.Basket.Items.Select(x => x.Product.Price * x.Count).ToList().Sum();
+            user.UserState = UserState.inBasket;
+            await _userRepo.UpdateAsync(user);
+            products = products.Append($"\n{localization.GetValue(Recources.Message.BasketAll)}:{totalPrice}");
+            await _botClient.SendTextMessageAsync(
+            user.Id,
+            $"{products}",
+            replyMarkup: new ReplyKeyboardMarkup(buttons));
+        }
+        #endregion
     }
 }

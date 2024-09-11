@@ -6,9 +6,15 @@ namespace E_Commerce_Bot.Helpers
 {
     public static class Translator
     {
-        public static List<string> Translate(string property, List<Category> translations)
+        public static List<string> Translate(string language, List<Category> translations)
         {
             List<string> result = new List<string>();
+            string property = language switch
+            {
+                "uz" => "Name_Uz",
+                "eu" => "Name_Ru",
+                "en" => "Name_En",
+            };
 
             foreach (var item in translations)
             {

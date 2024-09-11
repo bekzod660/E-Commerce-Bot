@@ -1,8 +1,5 @@
 ﻿using E_Commerce_Bot.Entities;
-using E_Commerce_Bot.Enums;
 using E_Commerce_Bot.Persistence.Repositories;
-using E_Commerce_Bot.Services.Bot.Buttons;
-using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using User = E_Commerce_Bot.Entities.User;
@@ -33,41 +30,27 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             {
                 user.Basket.Items.Clear();
                 await _userRepo.UpdateAsync(user);
-                await _botResponseService.SendCategories(user.Id, user.Language);
+                await _botResponseService.SendCategoriesAsync(user.Id, user.Language);
             }
             else
             {
-                var deletedProdcut = await _productRepo.GetByNameAsync(text);
+                var deletedProdcut = await _productRepo.GetByNameAsync(text, user.Language);
                 user.Basket.Items.Remove(user.Basket.Items.FirstOrDefault(x => x.Product.Id == deletedProdcut.Id));
                 await _userRepo.UpdateAsync(user);
-                await HandleBasketButtonAsync(user, _botClient, message);
+                await HandleBasketButtonAsync(user, message);
             }
         }
 
-        private async Task HandleBasketButtonAsync(User user, ITelegramBotClient botClient, Message message)
+        public async Task HandleBasketButtonAsync(User user, Message message)
         {
             if (user.Basket.Items.Count == 0)
             {
-                await _botResponseService.SendCategories(user.Id, user.Language);
+                await _botResponseService.SendMessageAsync(user.Id, Recources.Message.EmptyBasket);
+                await _botResponseService.SendCategoriesAsync(user.Id, user.Language);
             }
             else
             {
-                await botClient.SendTextMessageAsync(
-                message.Chat.Id,
-                "*«❌ Maxsulot nomi»* - savatdan o'chirish \r\n *«🔄 Tozalash»* - savatni butunlay bo'shatish");
-                var products = new StringBuilder("📥 Savat:");
-                foreach (var item in user.Basket.Items)
-                {
-                    products = products.Append($"\n{item.Product.Name_Uz}\n {item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
-                }
-                double totalPrice = user.Basket.Items.Select(x => x.Product.Price * x.Count).ToList().Sum();
-                user.UserProcess = UserProcess.inBasket;
-                await _userRepo.UpdateAsync(user);
-                products = products.Append($"\nJami:{totalPrice}");
-                await botClient.SendTextMessageAsync(
-                    message.Chat.Id,
-                    $"{products}",
-                    replyMarkup: KeyboardButtons.DeleteOrRemoveBasket(user.Basket.Items.Select(x => x.Product.Name_Uz)));
+
             }
         }
     }

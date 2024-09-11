@@ -26,20 +26,20 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
 
         public async Task HandleSettingsAsync(User user, Message message)
         {
-            await _botResponseService.SendSettingsMenu(user.Id, user.Language);
-            user.UserProcess = Enums.UserProcess.inSettings;
+            await _botResponseService.SendSettingsMenuAsync(user.Id, user.Language);
+            user.UserState = Enums.UserState.inSettings;
             await _userRepo.UpdateAsync(user);
         }
         public async Task HandleChangeLanguageAsync(User user, Message message)
         {
-            await _botResponseService.SendLangugaes(user.Id);
-            user.UserProcess = Enums.UserProcess.SelectLanguageInSettings;
+            await _botResponseService.SendLangugaesAsync(user.Id);
+            user.UserState = Enums.UserState.SelectLanguageInSettings;
             await _userRepo.UpdateAsync(user);
         }
         public async Task HandleChangePhoneAsync(User user)
         {
-            await _botResponseService.SendContactRequest(user.Id);
-            user.UserProcess = Enums.UserProcess.changePhoneInSettings;
+            await _botResponseService.SendContactRequestAsync(user.Id);
+            user.UserState = Enums.UserState.changePhoneInSettings;
             await _userRepo.UpdateAsync(user);
         }
     }

@@ -54,5 +54,10 @@ namespace E_Commerce_Bot.Persistence.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<Order> GetByNameAsync(string text, string language)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

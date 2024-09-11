@@ -46,9 +46,14 @@ namespace E_Commerce_Bot.Persistence.Repositories
             return await _db.Categories.AsNoTracking().ToListAsync();
         }
 
-        public Task<Category> GetByNameAsync(string text)
+        public async Task<Category> GetByNameAsync(string text, string language)
         {
-            throw new NotImplementedException();
+            return language switch
+            {
+                "uz" => await _db.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name_Uz == text),
+                "ru" => await _db.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name_Ru == text),
+                "en" => await _db.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name_En == text),
+            };
         }
     }
 }

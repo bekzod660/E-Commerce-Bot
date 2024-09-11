@@ -47,6 +47,11 @@ namespace E_Commerce_Bot.Persistence.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<Product> GetByNameAsync(string text, string language)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Product> GetProductByLanguageAsync(int id, string language)
         {
             string nameField, descriptionField;

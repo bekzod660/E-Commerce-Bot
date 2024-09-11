@@ -2,6 +2,6 @@
 {
     public static class Admin
     {
-        public static List<string> SuperAdmin = new List<string>() { "dssd" };
+        public static List<string> SuperAdmin = new List<string>() { "5875123499" };
     }
 }

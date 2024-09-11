@@ -51,27 +51,23 @@ namespace E_Commerce_Bot.Services.Bot
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            User user = await _userRepo.GetByIdAsync(update.Message.From.Id);
-            Telegram.Bot.Types.User _user = update.GetUser();
-            if (user == null)
+            User user = await _userRepo.GetByIdAsync(update.GetUser().Id);
+            if (user != null)
             {
+                SetCulture.SetUserCulture(user.Language);
+            }
+            else
+            {
+                Telegram.Bot.Types.User _user = update.GetUser();
                 await _userRepo.AddAsync(new User
                 {
                     Id = _user.Id,
                     Name = _user.FirstName + _user.LastName,
                     Language = _user.LanguageCode,
-                    UserProcess = UserProcess.sendGreeting,
+                    UserState = UserState.sendGreeting,
                     ProcessHelper = new Entities.ProcessHelper()
                 });
                 SetCulture.SetUserCulture(_user.LanguageCode);
-            }
-            else
-            {
-                SetCulture.SetUserCulture(user.Language);
-            }
-            if (_user.Id.ToString() == "587512349")
-            {
-                await BotOnMessageRecievedAdmin(botClient, update.Message);
             }
             var handler = update.Type switch
             {
@@ -85,7 +81,14 @@ namespace E_Commerce_Bot.Services.Bot
             }
             catch (Exception ex)
             {
-                await _botResponseService.SendMainMenu(user.Id);
+                //if (Admin.SuperAdmin.Contains(update.GetUser().Id.ToString()))
+                //{
+                //    await _botResponseService.SendAdminMainMenu(user.Id);
+                //}
+                //else
+                //{
+                //    await _botResponseService.SendMainMenuAsync(update.GetUser().Id);
+                //}
             }
         }
 

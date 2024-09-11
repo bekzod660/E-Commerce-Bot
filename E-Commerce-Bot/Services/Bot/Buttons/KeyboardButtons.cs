@@ -147,34 +147,7 @@ namespace E_Commerce_Bot.Services.Bot.Buttons
                 new KeyboardButton[]{BasketButton(),BackButton() }
             });
         }
-        public static IReplyMarkup DeleteOrRemoveBasket(IEnumerable<string> products)
-        {
-            var buttons = new List<List<KeyboardButton>>();
-            foreach (var product in products)
-            {
-                buttons.Add(
-                    new List<KeyboardButton>()
-                        {
-                            new KeyboardButton($"❌ {product}")
-                        });
-            }
-            buttons.Add(
-                new List<KeyboardButton>()
-                {
-                            new KeyboardButton("⬅️ Ortga"),
-                            new KeyboardButton("🔄 Tozalash")
-                 });
-            buttons.Add(
-                new List<KeyboardButton>()
-                {
-                            new KeyboardButton("🚖 Buyurtuma berish")
-                 });
-            return new ReplyKeyboardMarkup(buttons)
-            {
-                ResizeKeyboard = true,
-                OneTimeKeyboard = true,
-            };
-        }
+
         public static IReplyMarkup OnCommentBooking()
         {
             return new ReplyKeyboardMarkup(new[]
