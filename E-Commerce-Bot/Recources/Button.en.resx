@@ -123,6 +123,9 @@
   <data name="btn.basket" xml:space="preserve">
     <value>📥 Basket</value>
   </data>
+  <data name="btn.branches" xml:space="preserve">
+    <value>🏘 Barcha filiallar</value>
+  </data>
   <data name="btn.comment.order" xml:space="preserve">
     <value>Qo'shimcha fikr yoq</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="btn.information" xml:space="preserve">
     <value>ℹ️ About us</value>
+  </data>
+  <data name="btn.my.orders" xml:space="preserve">
+    <value>📋 Mening buyurtmalarim</value>
   </data>
   <data name="btn.order" xml:space="preserve">
     <value>🛍 Order</value>

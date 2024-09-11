@@ -154,7 +154,7 @@
     <value>Buyurtmani o'zingiz olib keting, yoki Yetkazib berishni tanlang</value>
   </data>
   <data name="msg.select.language" xml:space="preserve">
-    <value>Assalomu aleykum, tilni tanlang.</value>
+    <value>Tilni tanlang.</value>
   </data>
   <data name="msg.wellcome" xml:space="preserve">
     <value>Botga xush kelibsiz!</value>

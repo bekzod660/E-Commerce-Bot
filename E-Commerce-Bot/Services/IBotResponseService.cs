@@ -7,7 +7,7 @@
         Task SendContactRequest(long userId);
         Task InValidPhoneNumber(long userId);
         Task SendMainMenu(long userId);
-        Task SendSettingsMenu(long userId);
+        Task SendSettingsMenu(long userId, string userLanguge);
         Task SendMessages(long userId, string message);
         Task SendDeliveryTypes(long userId);
         Task SendLocationRequest(long userId);
@@ -16,5 +16,9 @@
         Task SendProduct(long userId);
         Task SendAmountRequest(long userId);
         Task SendCommentRequest(long userId);
+        #region Admin
+        Task SendAdminMainMenu(long userId);
+        #endregion
+
     }
 }

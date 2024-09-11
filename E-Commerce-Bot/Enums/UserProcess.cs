@@ -15,6 +15,7 @@
         inCategory,
         inSettings,
         SelectLanguageInSettings,
+        changePhoneInSettings,
         inProduct,
         amountRequest,
         onCommentOrder,

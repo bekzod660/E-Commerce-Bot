@@ -70,6 +70,7 @@ namespace E_Commerce_Bot.Services
             var matrix = new[]
             {
                 new[] { Button.Order },                    // First row with 1 button
+                new[] { Button.Branches, Button.MyOrders }, // Second row with 2 buttons
                 new[] { Button.FeedBack, Button.ContactUs }, // Second row with 2 buttons
                 new[] { Button.Information, Button.Settings } // Third row with 2 buttons
             };
@@ -96,10 +97,24 @@ namespace E_Commerce_Bot.Services
 
         public async Task SendLocationRequest(long userId)
         {
+            var markup = new ReplyKeyboardMarkup(new[]
+            {
+                new[]
+                    {
+                        KeyboardButton.WithRequestLocation($"{localization.GetValue(Button.SendLocation)}")
+                    },
+                new[]
+                    {
+                       new KeyboardButton( localization.GetValue(Button.Back))
+                    }
+            })
+            {
+                ResizeKeyboard = true
+            };
             await _botClient.SendTextMessageAsync(
                userId,
                $"{localization.GetValue(Recources.Message.LocationRequest)}",
-               replyMarkup: new ReplyKeyboardMarkup(KeyboardButton.WithRequestLocation("s")));
+               replyMarkup: markup);
         }
 
         public async Task SendCategories(long userId, string language)
@@ -161,20 +176,36 @@ namespace E_Commerce_Bot.Services
         #endregion
 
         #region Settings
-        public async Task SendSettingsMenu(long userId)
+        public async Task SendSettingsMenu(long userId, string userLanguage)
         {
-            var matrix = new[]
-           {
-                new[] { Button.ChangeLanguage, Button.ChangePhone },
-                new[]{localization.GetValue(Button.Back)}
+            var markup = new ReplyKeyboardMarkup(new[]
+            {
+                new[]
+                {
+                    new KeyboardButton($"{GetFlag(userLanguage)} {localization.GetValue(Button.ChangeLanguage)}"),
+                    new KeyboardButton(localization.GetValue(Button.ChangePhone))
+                },
+                new[]
+                {
+                    new KeyboardButton(localization.GetValue(Button.Back))
+                }
+            })
+            {
+                ResizeKeyboard = true
             };
 
             await _botClient.SendTextMessageAsync(
                 userId,
                 $"{localization.GetValue(Recources.Button.Settings)}",
-                replyMarkup: GetReplyKeyboardMarkup(matrix));
+                replyMarkup: markup);
         }
         #endregion
+        public async Task InValidPhoneNumber(long userId)
+        {
+            await _botClient.SendTextMessageAsync(
+                     userId,
+                   $"{localization.GetValue(Recources.Message.InValidPhoneNumber)} +998912345678");
+        }
         private ReplyKeyboardMarkup GetReplyKeyboardMarkup(string[][] buttons)
         {
             var markup = new KeyboardButton[buttons.GetLength(0)][];
@@ -187,12 +218,34 @@ namespace E_Commerce_Bot.Services
         }
         private string GetCurrentLanguage(string userLanguage, string language)
             => string.Equals(userLanguage, language, StringComparison.CurrentCultureIgnoreCase) ? "✅" : string.Empty;
-
-        public async Task InValidPhoneNumber(long userId)
+        private string GetFlag(string language)
         {
-            await _botClient.SendTextMessageAsync(
-                     userId,
-                   $"{localization.GetValue(Recources.Message.InValidPhoneNumber)} +998912345678");
+            return language switch
+            {
+                "uz" => "🇺🇿",
+                "ru" => "🇷🇺",
+                "en" => "🇬🇧"
+            };
+        }
+        private InlineKeyboardMarkup GetInlineKeyboard(string[][] matrix)
+        {
+            var buttonMatrix = new InlineKeyboardButton[matrix.GetLength(0)][];
+            for (int i = 0; i < matrix.GetLength(0); i++)
+                buttonMatrix[i] = matrix[i]
+                    .Select(x => InlineKeyboardButton.WithCallbackData(x, x)).ToArray();
+
+            return new InlineKeyboardMarkup(buttonMatrix);
+        }
+        public async Task SendAdminMainMenu(long userId)
+        {
+            var matrix = new[]
+            {
+                new[]{"Product Qo'shish"}
+            };
+            _botClient.SendTextMessageAsync(
+             chatId: userId,
+             text: "Salom",
+             replyMarkup: GetInlineKeyboard(matrix));
         }
     }
 }

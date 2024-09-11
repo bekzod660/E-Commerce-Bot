@@ -52,9 +52,9 @@ namespace E_Commerce_Bot.Services.Bot
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             User user = await _userRepo.GetByIdAsync(update.Message.From.Id);
+            Telegram.Bot.Types.User _user = update.GetUser();
             if (user == null)
             {
-                Telegram.Bot.Types.User _user = update.GetUser();
                 await _userRepo.AddAsync(new User
                 {
                     Id = _user.Id,
@@ -68,6 +68,10 @@ namespace E_Commerce_Bot.Services.Bot
             else
             {
                 SetCulture.SetUserCulture(user.Language);
+            }
+            if (_user.Id.ToString() == "587512349")
+            {
+                await BotOnMessageRecievedAdmin(botClient, update.Message);
             }
             var handler = update.Type switch
             {

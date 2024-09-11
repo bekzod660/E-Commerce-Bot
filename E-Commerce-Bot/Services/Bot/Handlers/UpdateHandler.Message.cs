@@ -50,6 +50,7 @@ namespace E_Commerce_Bot.Services.Bot
                 UserProcess.mainMenu => HandleMainMenuAsync(user, message),
                 UserProcess.inSettings => HandleSettingsAsync(user, message),
                 UserProcess.SelectLanguageInSettings => HandleSelectLanguageInSettingsAsync(user, message),
+                UserProcess.changePhoneInSettings => HandleChangePhoneAsync(user, message),
                 UserProcess.selectDeliveryType => _orderHandler.HandleInDeliveryTypeRequestAsync(user, message),
                 UserProcess.locationRequest => _orderHandler.HandleLocationRequestAsync(user, message),
                 UserProcess.inCategory => _orderHandler.HandleInCategoryAsync(user, message),
@@ -78,9 +79,39 @@ namespace E_Commerce_Bot.Services.Bot
             await _botResponseService.SendMainMenu(user.Id);
             await _userRepo.UpdateAsync(user);
         }
+        private async Task HandleChangePhoneAsync(User user, Message message)
+        {
+            string testCode = "1111";
+            if (message.Contact is null)
+            {
+                if (Regex.Match(message.Text, @"(?:[+][9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})").Success)
+                {
+
+                    //await SendSms(message.Contact.PhoneNumber, code); //avaible when sms working
+                    await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
+                    user.UserProcess = UserProcess.verifyCode;
+                    user.Code = testCode;
+                    user.PhoneNumber = message.Text;
+                    await _userRepo.UpdateAsync(user);
+                }
+                else
+                {
+                    await _botResponseService.InValidPhoneNumber(user.Id);
+                }
+            }
+            else
+            {
+                //  await SendSms(message.Contact.PhoneNumber, code);
+                await _botResponseService.SendMessages(user.Id, _localization.GetValue(Recources.Message.EnterCode));
+                user.UserProcess = UserProcess.verifyCode;
+                user.Code = testCode;
+                user.PhoneNumber = message.Contact.PhoneNumber;
+                await _userRepo.UpdateAsync(user);
+            }
+        }
         private async Task HandleSettingsAsync(User user, Message message)
         {
-            if (message.Text == _localization.GetValue(Button.ChangeLanguage))
+            if (message.Text.Contains(_localization.GetValue(Button.ChangeLanguage)))
             {
                 await _settingsHandler.HandleChangeLanguageAsync(user, message);
             }

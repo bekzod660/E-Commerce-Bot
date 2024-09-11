@@ -26,7 +26,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
 
         public async Task HandleSettingsAsync(User user, Message message)
         {
-            await _botResponseService.SendSettingsMenu(user.Id);
+            await _botResponseService.SendSettingsMenu(user.Id, user.Language);
             user.UserProcess = Enums.UserProcess.inSettings;
             await _userRepo.UpdateAsync(user);
         }
@@ -34,6 +34,12 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
         {
             await _botResponseService.SendLangugaes(user.Id);
             user.UserProcess = Enums.UserProcess.SelectLanguageInSettings;
+            await _userRepo.UpdateAsync(user);
+        }
+        public async Task HandleChangePhoneAsync(User user)
+        {
+            await _botResponseService.SendContactRequest(user.Id);
+            user.UserProcess = Enums.UserProcess.changePhoneInSettings;
             await _userRepo.UpdateAsync(user);
         }
     }

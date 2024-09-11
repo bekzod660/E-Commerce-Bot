@@ -1,0 +1,32 @@
+{
+  "Id": 1,
+  "Name_Uz": "Kategoriya nomi Uz",
+  "Name_Ru": "Имя категории Ru",
+  "Name_En": "Category Name En",
+  "Products": [
+    {
+      "Id": 1,
+      "Name_Uz": "Mahsulot nomi Uz",
+      "Name_Ru": "Название продукта Ru",
+      "Name_En": "Product Name En",
+      "Description_Uz": "Mahsulot ta'rifi Uz",
+      "Description_Ru": "Описание продукта Ru",
+      "Description_En": "Product Description En",
+      "Price": 100.0,
+      "ImagePath": "/images/product1.jpg",
+      "CategoryId": 1
+    },
+    {
+      "Id": 2,
+      "Name_Uz": "Mahsulot 2 nomi Uz",
+      "Name_Ru": "Название продукта 2 Ru",
+      "Name_En": "Product 2 Name En",
+      "Description_Uz": "Mahsulot 2 ta'rifi Uz",
+      "Description_Ru": "Описание продукта 2 Ru",
+      "Description_En": "Product 2 Description En",
+      "Price": 150.0,
+      "ImagePath": "/images/product2.jpg",
+      "CategoryId": 1
+    }
+  ]
+}
