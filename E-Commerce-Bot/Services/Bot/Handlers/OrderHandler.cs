@@ -2,7 +2,6 @@
 using E_Commerce_Bot.Enums;
 using E_Commerce_Bot.Helpers;
 using E_Commerce_Bot.Persistence.Repositories;
-using System.Text;
 using Telegram.Bot.Types;
 
 namespace E_Commerce_Bot.Services.Bot.Handlers
@@ -79,7 +78,11 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 {
                     await _botResponseService.SendMessageAsync(user.Id, localization.GetValue(Recources.Message.EmptyBasket));
                 }
-
+                else
+                {
+                    await _botResponseService.SendCommentRequest(user.Id);
+                    user.UserState = UserState.onCommentOrder;
+                }
             }
             else
             {
@@ -94,8 +97,8 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
 
                 }
                 user.UserState = UserState.inProduct;
-                await _userRepo.UpdateAsync(user);
             }
+            await _userRepo.UpdateAsync(user);
 
         }
 
@@ -146,6 +149,24 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             await _userRepo.UpdateAsync(user);
         }
 
+        public async Task HandleOnCommentOrderAsync(Entities.User user, Message message)
+        {
+            user.ProcessHelper.Comment = message.Text;
+            user.UserState = UserState.onSelectPaymentType;
+            await _userRepo.UpdateAsync(user);
+            await _botResponseService.SendPaymentTypeAsync(user.Id);
+        }
+        public async Task HandleOnSelectPaymentTypeAsync(Entities.User user, Message message)
+        {
+            string paymentType = PaymentTypes.Types.FirstOrDefault(message.Text);
+            if (paymentType != null)
+            {
+                user.UserState = UserState.atConfirmationOrder;
+                user.ProcessHelper.PaymentType = paymentType;
+                await _userRepo.UpdateAsync(user);
+
+            }
+        }
         public async Task HandleAtConfirmationOrderAsync(Entities.User user, Message message)
         {
             if (message.Text == "✅ Tasdiqlash")
@@ -179,52 +200,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             {
                 await _botResponseService.SendCategoriesAsync(user.Id, user.Language);
             }
-
-
         }
-
-        public async Task HandleOnSelectPaymentTypeAsync(Entities.User user, Message message)
-        {
-            string paymentType = PaymentTypes.Types.FirstOrDefault(message.Text);
-            if (paymentType != null)
-            {
-                user.UserState = UserState.atConfirmationOrder;
-                user.ProcessHelper.PaymentType = paymentType;
-                await _userRepo.UpdateAsync(user);
-                var txt = new StringBuilder("Sizning buyurtmangiz:\n");
-                string deliveryType = user.ProcessHelper.OrderType == OrderType.Delivery ? "🚖 Yetkazib berish"
-                    : "🏃 Olib ketish";
-
-                txt.Append($"Buyurtma turi:{deliveryType}");
-                txt.Append($"Telefon:{user.PhoneNumber}");
-                txt.Append($"To'lov usuli:{paymentType}");
-                txt.Append($"Izohlar:{user.ProcessHelper.Comment}");
-                //foreach (var item in user.Basket.Items)
-                //{
-                //    txt.Append($"{item.Product.Name}\n" +
-                //        $"{item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
-                //}
-                //txt.Append($"Jami: {user.Basket.Items.Select(x => x.Count * x.Product.Price).Sum()}");
-                //await botClient.SendTextMessageAsync(
-                //    message.Chat.Id,
-                //    $"{txt}",
-                //    replyMarkup: KeyboardButtons.AfterSelectPaymentType());
-                user.UserState = UserState.atConfirmationOrder;
-                await _userRepo.UpdateAsync(user);
-            }
-        }
-
-        public async Task HandleOnCommentOrderAsync(Entities.User user, Message message)
-        {
-            user.ProcessHelper.Comment = message.Text;
-            user.UserState = UserState.onSelectPaymentType;
-            await _userRepo.UpdateAsync(user);
-            //await botClient.SendTextMessageAsync(
-            //    message.Chat.Id,
-            //    "Buyurtmangiz uchun to'lov turini tanlang",
-            //    replyMarkup: KeyboardButtons.OnSelectPaymentType());
-        }
-
         public async Task HandlePlaceAnOrderButtonAsync(Entities.User user, Message message)
         {
             user.UserState = UserState.onCommentOrder;

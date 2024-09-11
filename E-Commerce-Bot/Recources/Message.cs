@@ -18,11 +18,19 @@
 
         public static string InAmount = "msg.amount";
         public static string OnCommentToOrder = "msg.comment.order";
+        public static string SelectPaymentType = "msg.select.payment";
 
         #region Basket
         public static string EmptyBasket = "msg.empty.basket";
         public static string Basket = "msg.basket";
         public static string BasketAll = "msg.all.basket";
+        #endregion
+        #region ConfrimOrder
+        public static string YourOrder = "msg.your.order";
+        public static string OrderType = "msg.order.type";
+        public static string Phone = "msg.phone";
+        public static string PaymentType = "msg.payment.type";
+        public static string CommentForOrder = "msg.comment";
         #endregion
     }
 }

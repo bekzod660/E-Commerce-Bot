@@ -34,7 +34,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 Enums.UserState.inSettings => _botResponseService.SendMainMenuAsync(user.Id),
                 Enums.UserState.inDelivery => _botResponseService.SendMainMenuAsync(user.Id),
                 Enums.UserState.inPaymentProcess => _botResponseService.SendMainMenuAsync(user.Id),
-                Enums.UserState.inBasket => _botResponseService.SendMainMenuAsync(user.Id),
+                Enums.UserState.inBasket => _botResponseService.SendCategoriesAsync(user.Id, user.Language),
                 Enums.UserState.fullName => _botResponseService.SendMainMenuAsync(user.Id),
                 Enums.UserState.onSelectPaymentType => _botResponseService.SendMainMenuAsync(user.Id),
                 Enums.UserState.onCommentOrder => _botResponseService.SendMainMenuAsync(user.Id),

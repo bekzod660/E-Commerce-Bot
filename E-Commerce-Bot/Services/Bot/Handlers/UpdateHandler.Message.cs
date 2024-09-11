@@ -203,6 +203,8 @@ namespace E_Commerce_Bot.Services.Bot
 
         private async Task HandleMainMenuAsync(User user, Message message)
         {
+            user.Basket.Items.Clear();
+            await _userRepo.UpdateAsync(user);
             if (message.Text == _localization.GetValue(Button.Order))
             {
                 await _orderHandler.HandleOrderButtonAsync(user, message);

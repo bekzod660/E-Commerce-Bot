@@ -17,8 +17,8 @@ namespace E_Commerce_Bot.Services
         Task SendCategoriesAsync(long userId, string language);
         Task SendProductsAsync(long userId, List<string> products);
         Task SendProductAsync(long userId, ProductDto productDto);
-        Task SendAmountRequestAsync(long userId);
-        Task SendCommentRequest(long userId);
+        Task SendPaymentTypeAsync(long userId);
+        Task SendInvoiceConfirmOrder(long userId, User user);
         #region Admin
         Task SendAdminMainMenu(long userId);
         Task SendInlineCategoryAsync(long userId, string language);
@@ -26,6 +26,8 @@ namespace E_Commerce_Bot.Services
 
         #region Basket
         Task SendProductsBasket(long userId, User user);
+        Task SendAmountRequestAsync(long userId);
+        Task SendCommentRequest(long userId);
         #endregion
 
     }

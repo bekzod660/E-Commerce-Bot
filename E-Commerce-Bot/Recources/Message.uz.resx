@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="btn.comment.order" xml:space="preserve">
+    <value>Qo'shimcha fikr yoq</value>
+  </data>
   <data name="msg.all.basket" xml:space="preserve">
     <value>Jami</value>
   </data>
   <data name="msg.amount" xml:space="preserve">
     <value>Miqdorini tanlang yoki kiriting:</value>
+  </data>
+  <data name="msg.comment" xml:space="preserve">
+    <value>Izohlar</value>
   </data>
   <data name="msg.comment.order" xml:space="preserve">
     <value>Buyurtmaga izoh qoldiring</value>
@@ -153,13 +159,28 @@
   <data name="msg.location.request" xml:space="preserve">
     <value>📍 Lokatsiya yuboring ...</value>
   </data>
+  <data name="msg.order.type" xml:space="preserve">
+    <value>Buyurtma turi</value>
+  </data>
+  <data name="msg.payment.type" xml:space="preserve">
+    <value>To'lov usuli</value>
+  </data>
+  <data name="msg.phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
   <data name="msg.select.delivery.type" xml:space="preserve">
     <value>Buyurtmani o'zingiz olib keting, yoki Yetkazib berishni tanlang</value>
   </data>
   <data name="msg.select.language" xml:space="preserve">
     <value>Tilni tanlang.</value>
   </data>
+  <data name="msg.select.payment" xml:space="preserve">
+    <value>Buyurtmangiz uchun to'lov turini tanlang</value>
+  </data>
   <data name="msg.wellcome" xml:space="preserve">
     <value>Botga xush kelibsiz!</value>
+  </data>
+  <data name="msg.your.order" xml:space="preserve">
+    <value>Sizning buyurtmangiz</value>
   </data>
 </root>
