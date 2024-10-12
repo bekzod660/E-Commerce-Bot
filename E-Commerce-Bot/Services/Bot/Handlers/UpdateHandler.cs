@@ -1,4 +1,5 @@
-﻿using E_Commerce_Bot.Enums;
+﻿using E_Commerce_Bot.Entities;
+using E_Commerce_Bot.Enums;
 using E_Commerce_Bot.Extensions;
 using E_Commerce_Bot.Helpers;
 using E_Commerce_Bot.Persistence.Repositories;
@@ -59,13 +60,18 @@ namespace E_Commerce_Bot.Services.Bot
             else
             {
                 Telegram.Bot.Types.User _user = update.GetUser();
-                await _userRepo.AddAsync(new User
+                await _userRepo.AddAsync(new User(
+                     basket: new Entities.Basket(),
+                     processHelper: new Entities.ProcessHelper(),
+                     orders: new HashSet<Order>() // Bo'sh to'plam yaratish
+                )
                 {
                     Id = _user.Id,
-                    Name = _user.FirstName + _user.LastName,
+                    Name = _user.FirstName + " " + _user.LastName, // Bo'sh joy qo'shilishi uchun
                     Language = _user.LanguageCode,
-                    UserStateId = UserState.SEND_GREETING
+                    UserStateId = UserState.SEND_GREETING,
                 });
+
                 SetCulture.SetUserCulture(_user.LanguageCode);
             }
             var handler = update.Type switch
