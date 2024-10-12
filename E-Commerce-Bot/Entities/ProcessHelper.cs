@@ -1,6 +1,4 @@
-﻿using E_Commerce_Bot.Enums;
-
-namespace E_Commerce_Bot.Entities
+﻿namespace E_Commerce_Bot.Entities
 {
     public class ProcessHelper
     {
@@ -8,7 +6,7 @@ namespace E_Commerce_Bot.Entities
         public int ProductId { get; set; }
         public int CategoryId { get; set; }
         public string? Comment { get; set; }
-        public OrderType OrderType { get; set; }
+        public int OrderTypeId { get; set; }
         public string? PaymentType { get; set; }
         public long UserId { get; set; }
         public User? User { get; set; }

@@ -1,6 +1,4 @@
-﻿using E_Commerce_Bot.Enums;
-
-namespace E_Commerce_Bot.Entities
+﻿namespace E_Commerce_Bot.Entities
 {
     public class Order
     {
@@ -19,7 +17,7 @@ namespace E_Commerce_Bot.Entities
                     return 0;
             }
         }
-        public OrderType OrderType { get; set; }
+        public int OrderTypeId { get; set; }
         public string PaymentType { get; set; }
         public bool IsDelivered { get; set; } = false;
         public bool IsPaid { get; set; } = false;

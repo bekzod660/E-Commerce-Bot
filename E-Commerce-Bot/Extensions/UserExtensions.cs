@@ -7,20 +7,20 @@ namespace E_Commerce_Bot.Extensions
     {
         public static User UserStateManager(this User user)
         {
-            user.UserState = user.UserState switch
+            user.UserStateId = user.UserStateId switch
             {
-                UserState.InCategory => UserState.AdminMenu,
-                Enums.UserState.inCategory => UserState.mainMenu,
-                Enums.UserState.inSettings => UserState.mainMenu,
-                Enums.UserState.inDelivery => UserState.mainMenu,
-                Enums.UserState.inPaymentProcess => UserState.mainMenu,
-                Enums.UserState.inBasket => UserState.mainMenu,
-                Enums.UserState.fullName => UserState.mainMenu,
-                Enums.UserState.onSelectPaymentType => UserState.mainMenu,
-                Enums.UserState.onCommentOrder => UserState.mainMenu,
-                Enums.UserState.amountRequest => UserState.mainMenu,
-                Enums.UserState.atConfirmationOrder => UserState.mainMenu,
-                _ => UserState.mainMenu
+                Enums.UserState.AdminInCategory => UserState.ADMIN_MENU,
+                Enums.UserState.IN_CATEGORY => UserState.MAIN_MENU,
+                Enums.UserState.SETTINGS => UserState.MAIN_MENU,
+                Enums.UserState.IN_DELIVERY => UserState.MAIN_MENU,
+                Enums.UserState.IN_PAYMENT_PROCESS => UserState.MAIN_MENU,
+                Enums.UserState.IN_BASKET => UserState.MAIN_MENU,
+                Enums.UserState.FULLNAME => UserState.MAIN_MENU,
+                Enums.UserState.ON_SELECT_PAYMENT_TYPE => UserState.MAIN_MENU,
+                Enums.UserState.ON_COMMENT_TO_ORDER => UserState.MAIN_MENU,
+                Enums.UserState.AMOUNT_REQUEST => UserState.MAIN_MENU,
+                Enums.UserState.AT_CONFIRMATION_AMOUNT => UserState.MAIN_MENU,
+                _ => UserState.MAIN_MENU
             };
             return user;
         }

@@ -25,18 +25,18 @@ namespace E_Commerce_Bot.Services.Bot
         {
             user = user.UserStateManager();
             await _userRepo.UpdateAsync(user);
-            Task res = user.UserState switch
+            Task res = user.UserStateId switch
             {
-                Enums.UserState.inCategory => _botResponseService.SendAdminMainMenu(user.Id),
-                Enums.UserState.inSettings => _botResponseService.SendAdminMainMenu(user.Id),
-                Enums.UserState.inDelivery => _botResponseService.SendAdminMainMenu(user.Id),
-                Enums.UserState.inPaymentProcess => _botResponseService.SendAdminMainMenu(user.Id),
-                Enums.UserState.inBasket => _botResponseService.SendAdminMainMenu(user.Id),
-                Enums.UserState.fullName => _botResponseService.SendAdminMainMenu(user.Id),
-                Enums.UserState.onSelectPaymentType => _botResponseService.SendAdminMainMenu(user.Id),
-                Enums.UserState.onCommentOrder => _botResponseService.SendAdminMainMenu(user.Id),
-                Enums.UserState.amountRequest => _botResponseService.SendAdminMainMenu(user.Id),
-                Enums.UserState.atConfirmationOrder => _botResponseService.SendAdminMainMenu(user.Id),
+                5 => _botResponseService.SendAdminMainMenu(user.Id),
+                6 => _botResponseService.SendAdminMainMenu(user.Id),
+                7 => _botResponseService.SendAdminMainMenu(user.Id),
+                8 => _botResponseService.SendAdminMainMenu(user.Id),
+                9 => _botResponseService.SendAdminMainMenu(user.Id),
+                10 => _botResponseService.SendAdminMainMenu(user.Id),
+                11 => _botResponseService.SendAdminMainMenu(user.Id),
+                12 => _botResponseService.SendAdminMainMenu(user.Id),
+                13 => _botResponseService.SendAdminMainMenu(user.Id),
+                14 => _botResponseService.SendAdminMainMenu(user.Id),
                 _ => _botResponseService.SendAdminMainMenu(user.Id)
             };
             await res;

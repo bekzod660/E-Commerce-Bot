@@ -6,9 +6,10 @@ using E_Commerce_Bot.Persistence.Repositories;
 using E_Commerce_Bot.Recources;
 using System.Text;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using Message = E_Commerce_Bot.Recources.Message;
+using User = E_Commerce_Bot.Entities.User;
 
 namespace E_Commerce_Bot.Services
 {
@@ -302,7 +303,7 @@ namespace E_Commerce_Bot.Services
                             new KeyboardButton("🚖 Buyurtuma berish")
                  });
             double totalPrice = user.Basket.Items.Select(x => x.Product.Price * x.Count).ToList().Sum();
-            user.UserState = UserState.inBasket;
+            user.UserStateId = UserState.IN_BASKET;
             await _userRepo.UpdateAsync(user);
             products = products.Append($"\n<b>{localization.GetValue(Recources.Message.BasketAll)}: {totalPrice.ToString("#,0", System.Globalization.CultureInfo.InvariantCulture).Replace(",", " ")} so'm</b>");
             await _botClient.SendTextMessageAsync(
@@ -341,26 +342,26 @@ namespace E_Commerce_Bot.Services
 
         public async Task SendInvoiceConfirmOrder(long userId, User user)
         {
-            string paymentType = PaymentTypes.Types.FirstOrDefault(message.Text);
+            //string paymentType = PaymentTypes.Types.FirstOrDefault(message.Text);
             var txt = new StringBuilder($"<b>{localization.GetValue(Message.YourOrder)}\n");
-            string deliveryType = user.ProcessHelper.OrderType == OrderType.Delivery ? $"{localization.GetValue(Button.Delivery)}"
+            string deliveryType = user.ProcessHelper.OrderTypeId == OrderType.Delivery ? $"{localization.GetValue(Button.Delivery)}"
                 : $"{localization.GetValue(Button.PickUp)}";
 
-            txt.Append($"{localization.GetValue(Message.OrderType)}:{deliveryType}");
-            txt.Append($"{localization.GetValue(Message.Phone)}:{user.PhoneNumber}");
-            txt.Append($"{localization.GetValue(Message.PaymentType)}:{paymentType}");
+            txt.Append($"{localization.GetValue(Recources.Message.OrderType)}:{deliveryType}");
+            txt.Append($"{localization.GetValue(Recources.Message.Phone)}:{user.PhoneNumber}");
+            //txt.Append($"{localization.GetValue(Recources.Message.PaymentType)}:{paymentType}");
             txt.Append($"{localization.GetValue(Message.CommentForOrder)}:{user.ProcessHelper.Comment}");
-            foreach (var item in user.Basket.Items)
-            {
-                txt.Append($"{item.Product.Name}\n" +
-                    $"{item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
-            }
-            txt.Append($"{localization.GetValue(Message.BasketAll)}: {user.Basket.Items.Select(x => x.Count * x.Product.Price).Sum()}");
-            await _botClient.SendTextMessageAsync(
-                userId,
-                $"{txt}</b>",
-                replyMarkup: KeyboardButtons.AfterSelectPaymentType());
-            user.UserState = UserState.atConfirmationOrder;
+            //foreach (var item in user.Basket.Items)
+            //{
+            //    txt.Append($"{item.Product.Name}\n" +
+            //        $"{item.Count} * {item.Product.Price} = {item.Count * item.Product.Price}\n");
+            //}
+            //txt.Append($"{localization.GetValue(Message.BasketAll)}: {user.Basket.Items.Select(x => x.Count * x.Product.Price).Sum()}");
+            //await _botClient.SendTextMessageAsync(
+            //    userId,
+            //    $"{txt}</b>",
+            //    replyMarkup: KeyboardButtons.AfterSelectPaymentType());
+            //user.UserState = UserState.atConfirmationOrder;
             await _userRepo.UpdateAsync(user);
         }
     }

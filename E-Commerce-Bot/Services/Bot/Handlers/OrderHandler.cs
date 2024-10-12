@@ -29,7 +29,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
 
         public async Task HandleOrderButtonAsync(Entities.User user, Message message)
         {
-            user.UserState = UserState.selectDeliveryType;
+            user.UserStateId = UserState.SELECT_DELIVERY_TYPE;
             //user.Basket.Items.Clear();
             await _userRepo.UpdateAsync(user);
             await _botResponseService.SendDeliveryTypesAsync(user.Id);
@@ -42,21 +42,21 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             //}
             if (message.Text == $"{localization.GetValue(Recources.Button.Delivery)}")
             {
-                user.ProcessHelper.OrderType = OrderType.Delivery;
-                user.UserState = UserState.locationRequest;
+                user.ProcessHelper.OrderTypeId = OrderType.Delivery;
+                user.UserStateId = UserState.LOCATION_REQUEST;
                 await _userRepo.UpdateAsync(user);
                 await _botResponseService.SendLocationRequestAsync(user.Id);
             }
             else if (message.Text == $"{localization.GetValue(Recources.Button.PickUp)}")
             {
-                user.ProcessHelper.OrderType = OrderType.PickUp;
-                user.UserState = UserState.inCategory;
+                user.ProcessHelper.OrderTypeId = OrderType.Pick_Up;
+                user.UserStateId = UserState.IN_CATEGORY;
                 await _userRepo.UpdateAsync(user);
                 await _botResponseService.SendCategoriesAsync(user.Id, user.Language);
             }
             else
             {
-                user.UserState = UserState.mainMenu;
+                user.UserStateId = UserState.MAIN_MENU;
                 await _userRepo.UpdateAsync(user);
                 await _botResponseService.SendMainMenuAsync(user.Id);
             }
@@ -64,7 +64,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
         public async Task HandleLocationRequestAsync(Entities.User user, Message message)
         {
             user.ProcessHelper.Longitute = message.Location.Longitude;
-            user.UserState = UserState.inCategory;
+            user.UserStateId = UserState.IN_CATEGORY;
             user.ProcessHelper.Latitude = message.Location.Latitude;
             await _userRepo.UpdateAsync(user);
             await _botResponseService.SendCategoriesAsync(user.Id, user.Language);
@@ -81,7 +81,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 else
                 {
                     await _botResponseService.SendCommentRequest(user.Id);
-                    user.UserState = UserState.onCommentOrder;
+                    user.UserStateId = UserState.ON_COMMENT_TO_ORDER;
                 }
             }
             else
@@ -96,7 +96,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 {
 
                 }
-                user.UserState = UserState.inProduct;
+                user.UserStateId = UserState.IN_PRODUCT;
             }
             await _userRepo.UpdateAsync(user);
 
@@ -108,7 +108,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             Product product = await _productRepo.GetByNameAsync(message.Text, user.Language);
             if (product is Product)
             {
-                user.UserState = UserState.amountRequest;
+                user.UserStateId = UserState.AMOUNT_REQUEST;
                 user.ProcessHelper.ProductId = product.Id;
                 user.ProcessHelper.CategoryId = product.CategoryId;
                 await _botResponseService.SendProductAsync(user.Id, product.Translate(user.Language));
@@ -116,7 +116,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             }
             else
             {
-                user.UserState = UserState.mainMenu;
+                user.UserStateId = UserState.MAIN_MENU;
                 await _botResponseService.SendMainMenuAsync(user.Id);
             }
             await _userRepo.UpdateAsync(user);
@@ -145,14 +145,14 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 }
                 await _botResponseService.SendCategoriesAsync(user.Id, user.Language);
             }
-            user.UserState = UserState.inCategory;
+            user.UserStateId = UserState.IN_CATEGORY;
             await _userRepo.UpdateAsync(user);
         }
 
         public async Task HandleOnCommentOrderAsync(Entities.User user, Message message)
         {
             user.ProcessHelper.Comment = message.Text;
-            user.UserState = UserState.onSelectPaymentType;
+            user.UserStateId = UserState.ON_SELECT_PAYMENT_TYPE;
             await _userRepo.UpdateAsync(user);
             await _botResponseService.SendPaymentTypeAsync(user.Id);
         }
@@ -161,7 +161,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             string paymentType = PaymentTypes.Types.FirstOrDefault(message.Text);
             if (paymentType != null)
             {
-                user.UserState = UserState.atConfirmationOrder;
+                user.UserStateId = UserState.AT_CONFIRMATION_AMOUNT;
                 user.ProcessHelper.PaymentType = paymentType;
                 await _userRepo.UpdateAsync(user);
 
@@ -171,7 +171,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
         {
             if (message.Text == "✅ Tasdiqlash")
             {
-                user.UserState = UserState.inPaymentProcess;
+                user.UserStateId = UserState.IN_PAYMENT_PROCESS;
                 List<Product> products = user.Basket.Items.Select(x => x.Product).ToList();
                 user.Orders.Add(
                     new Order()
@@ -180,7 +180,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                         Latitude = user.ProcessHelper.Latitude,
                         Comment = user.ProcessHelper.Comment,
                         Products = products,
-                        OrderType = user.ProcessHelper.OrderType,
+                        OrderTypeId = user.ProcessHelper.OrderTypeId,
                         PaymentType = user.ProcessHelper.PaymentType,
                         User = user
                     });
@@ -203,7 +203,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
         }
         public async Task HandlePlaceAnOrderButtonAsync(Entities.User user, Message message)
         {
-            user.UserState = UserState.onCommentOrder;
+            user.UserStateId = UserState.ON_COMMENT_TO_ORDER;
             if (user.Orders is null)
             {
                 user.Orders = new List<Order>();
@@ -214,7 +214,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
                 {
                     Longitute = (double)user.ProcessHelper.Longitute,
                     Latitude = (double)user.ProcessHelper.Latitude,
-                    OrderType = OrderType.Delivery,
+                    OrderTypeId = OrderType.Delivery,
                     User = user,
                     UserId = user.Id
 

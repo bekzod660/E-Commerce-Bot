@@ -27,7 +27,7 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             if (text == localization.GetValue(Button.EmptyBasket))
             {
                 user.Basket.Items.Clear();
-                user.UserState = Enums.UserState.inCategory;
+                user.UserStateId = Enums.UserState.IN_CATEGORY;
                 await _userRepo.UpdateAsync(user);
                 await _botResponseService.SendCategoriesAsync(user.Id, user.Language);
             }
@@ -50,12 +50,12 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
             {
                 await _botResponseService.SendMessageAsync(user.Id, Recources.Message.EmptyBasket);
                 await _botResponseService.SendCategoriesAsync(user.Id, user.Language);
-                user.UserState = Enums.UserState.inCategory;
+                user.UserStateId = Enums.UserState.IN_CATEGORY;
             }
             else
             {
                 await _botResponseService.SendProductsBasket(user.Id, user);
-                user.UserState = Enums.UserState.onCommentOrder;
+                user.UserStateId = Enums.UserState.ON_COMMENT_TO_ORDER;
             }
             await _userRepo.UpdateAsync(user);
         }

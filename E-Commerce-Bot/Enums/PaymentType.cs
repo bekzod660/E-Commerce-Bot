@@ -1,9 +1,9 @@
 ﻿namespace E_Commerce_Bot.Enums
 {
-    public enum PaymentType
+    public static class PaymentType
     {
-        Click,
-        Payme,
-        Cash
+        public static int Click = 1;
+        public static int Payme = 2;
+        public static int Cash = 3;
     }
 }

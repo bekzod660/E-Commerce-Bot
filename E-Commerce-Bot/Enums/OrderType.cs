@@ -1,8 +1,8 @@
 ﻿namespace E_Commerce_Bot.Enums
 {
-    public enum OrderType
+    public static class OrderType
     {
-        Delivery,
-        PickUp
+        public static int Pick_Up = 1;
+        public static int Delivery = 1;
     }
 }

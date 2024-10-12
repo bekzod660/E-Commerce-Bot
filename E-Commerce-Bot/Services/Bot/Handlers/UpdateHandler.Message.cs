@@ -15,11 +15,11 @@ namespace E_Commerce_Bot.Services.Bot
         {
             if (message is null) return;
             Entities.User user = await _userRepo.GetByIdAsync(message.Chat.Id);
-            if (message.Text == "/start" && user.UserState == UserState.sendGreeting)
+            if (message.Text == "/start" && user.UserStateId == UserState.SEND_GREETING)
             {
                 await _botResponseService.SendGreetingAsync(user.Id);
                 await _botResponseService.SendLangugaesAsync(user.Id);
-                user.UserState = UserState.selectLanguage;
+                user.UserStateId = UserState.SELECT_LANGUAGE;
                 await _userRepo.UpdateAsync(user);
             }
             else if (message.Text == _localization.GetValue(Button.Basket))
@@ -42,25 +42,25 @@ namespace E_Commerce_Bot.Services.Bot
         }
         private async Task HandleUserProcess(User user, ITelegramBotClient botClient, Message message)
         {
-            Task res = user.UserState switch
+            Task res = user.UserStateId switch
             {
-                UserState.selectLanguage => HandleSelectLanguageAsync(user, message),
-                UserState.contactRequest => HandleContactRequestAsync(user, message),
-                UserState.verifyCode => HandleVerifyCodeAsync(user, botClient, message),
-                UserState.fullName => HandleFullNameRequestAsync(user, message),
-                UserState.mainMenu => HandleMainMenuAsync(user, message),
-                UserState.inSettings => HandleSettingsAsync(user, message),
-                UserState.SelectLanguageInSettings => HandleSelectLanguageInSettingsAsync(user, message),
-                UserState.changePhoneInSettings => HandleChangePhoneAsync(user, message),
-                UserState.selectDeliveryType => _orderHandler.HandleInDeliveryTypeRequestAsync(user, message),
-                UserState.locationRequest => _orderHandler.HandleLocationRequestAsync(user, message),
-                UserState.inCategory => _orderHandler.HandleInCategoryAsync(user, message),
-                UserState.inProduct => _orderHandler.HandleInProductAsync(user, message),
-                UserState.amountRequest => _orderHandler.HandleAmountRequestAsync(user, message),
-                UserState.inBasket => _basketHandler.HandleActionInBasketAsync(user, message),
-                UserState.onCommentOrder => _orderHandler.HandleOnCommentOrderAsync(user, message),
-                UserState.onSelectPaymentType => _orderHandler.HandleOnSelectPaymentTypeAsync(user, message),
-                UserState.atConfirmationOrder => _orderHandler.HandleAtConfirmationOrderAsync(user, message),
+                2 => HandleSelectLanguageAsync(user, message),
+                3 => HandleContactRequestAsync(user, message),
+                4 => HandleVerifyCodeAsync(user, botClient, message),
+                5 => HandleFullNameRequestAsync(user, message),
+                6 => HandleMainMenuAsync(user, message),
+                7 => HandleSettingsAsync(user, message),
+                20 => HandleSelectLanguageInSettingsAsync(user, message),
+                21 => HandleChangePhoneAsync(user, message),
+                8 => _orderHandler.HandleInDeliveryTypeRequestAsync(user, message),
+                11 => _orderHandler.HandleLocationRequestAsync(user, message),
+                12 => _orderHandler.HandleInCategoryAsync(user, message),
+                13 => _orderHandler.HandleInProductAsync(user, message),
+                14 => _orderHandler.HandleAmountRequestAsync(user, message),
+                19 => _basketHandler.HandleActionInBasketAsync(user, message),
+                15 => _orderHandler.HandleOnCommentOrderAsync(user, message),
+                16 => _orderHandler.HandleOnSelectPaymentTypeAsync(user, message),
+                17 => _orderHandler.HandleAtConfirmationOrderAsync(user, message),
                 _ => HandleUnknownCommandAsync(user, message)
             };
             await res;
@@ -69,7 +69,7 @@ namespace E_Commerce_Bot.Services.Bot
         #region ActionsInSettings
         private async Task HandleSelectLanguageInSettingsAsync(User user, Message message)
         {
-            user.UserState = UserState.mainMenu;
+            user.UserStateId = UserState.MAIN_MENU;
             user.Language = message.Text switch
             {
                 "O'zbekcha🇺🇿" => "uz",
@@ -90,7 +90,7 @@ namespace E_Commerce_Bot.Services.Bot
 
                     //await SendSms(message.Contact.PhoneNumber, code); //avaible when sms working
                     await _botResponseService.SendMessageAsync(user.Id, _localization.GetValue(Recources.Message.EnterCode));
-                    user.UserState = UserState.verifyCode;
+                    user.UserStateId = UserState.VERIFY_CODE;
                     user.Code = testCode;
                     user.PhoneNumber = message.Text;
                     await _userRepo.UpdateAsync(user);
@@ -104,7 +104,7 @@ namespace E_Commerce_Bot.Services.Bot
             {
                 //  await SendSms(message.Contact.PhoneNumber, code);
                 await _botResponseService.SendMessageAsync(user.Id, _localization.GetValue(Recources.Message.EnterCode));
-                user.UserState = UserState.verifyCode;
+                user.UserStateId = UserState.VERIFY_CODE;
                 user.Code = testCode;
                 user.PhoneNumber = message.Contact.PhoneNumber;
                 await _userRepo.UpdateAsync(user);
@@ -126,7 +126,7 @@ namespace E_Commerce_Bot.Services.Bot
         #region RegisterProcess
         private async Task HandleSelectLanguageAsync(User user, Message message)
         {
-            user.UserState = UserState.contactRequest;
+            user.UserStateId = UserState.CONTACT_REQUEST;
             user.Language = message.Text switch
             {
                 "O'zbekcha🇺🇿" => "uz",
@@ -141,7 +141,7 @@ namespace E_Commerce_Bot.Services.Bot
         {
             if (string.Equals(user.Code, message.Text))
             {
-                user.UserState = UserState.fullName;
+                user.UserStateId = UserState.FULLNAME;
                 user.PhoneNumber = user.ProcessHelper.UserPhoneNumber;
                 await _userRepo.UpdateAsync(user);
                 await _botResponseService.SendMessageAsync(user.Id, _localization.GetValue(Recources.Message.FullName));
@@ -162,7 +162,7 @@ namespace E_Commerce_Bot.Services.Bot
 
                     //await SendSms(message.Contact.PhoneNumber, code); //avaible when sms working
                     await _botResponseService.SendMessageAsync(user.Id, _localization.GetValue(Recources.Message.EnterCode));
-                    user.UserState = UserState.verifyCode;
+                    user.UserStateId = UserState.VERIFY_CODE;
                     user.Code = testCode;
                     user.PhoneNumber = message.Text;
                     await _userRepo.UpdateAsync(user);
@@ -176,7 +176,7 @@ namespace E_Commerce_Bot.Services.Bot
             {
                 //  await SendSms(message.Contact.PhoneNumber, code);
                 await _botResponseService.SendMessageAsync(user.Id, _localization.GetValue(Recources.Message.EnterCode));
-                user.UserState = UserState.verifyCode;
+                user.UserStateId = UserState.VERIFY_CODE;
                 user.Code = testCode;
                 user.PhoneNumber = message.Contact.PhoneNumber;
                 await _userRepo.UpdateAsync(user);
@@ -188,13 +188,13 @@ namespace E_Commerce_Bot.Services.Bot
             user.Name = message.Text;
             if (Admin.SuperAdmin.Contains(message.From.Id.ToString()))
             {
-                user.UserState = UserState.AdminMenu;
+                user.UserStateId = UserState.ADMIN_MENU;
                 await _botResponseService.SendAdminMainMenu(user.Id);
             }
             else
             {
                 await _botResponseService.SendMainMenuAsync(user.Id);
-                user.UserState = UserState.mainMenu;
+                user.UserStateId = UserState.MAIN_MENU;
             }
             await _userRepo.UpdateAsync(user);
         }
@@ -258,12 +258,12 @@ namespace E_Commerce_Bot.Services.Bot
             {
                 await _botResponseService.SendGreetingAsync(user.Id);
                 await _botResponseService.SendLangugaesAsync(user.Id);
-                user.UserState = UserState.selectLanguage;
+                user.UserStateId = UserState.SELECT_LANGUAGE;
             }
             else if (user.PhoneNumber is null)
             {
                 await _botResponseService.SendContactRequestAsync(user.Id);
-                user.UserState = UserState.selectLanguage;
+                user.UserStateId = UserState.SELECT_LANGUAGE;
             }
             else if (Admin.SuperAdmin.Contains(message.From.Id.ToString()))
             {
@@ -284,13 +284,13 @@ namespace E_Commerce_Bot.Services.Bot
         {
             if (Admin.SuperAdmin.Contains(user.Id.ToString()))
             {
-                user.UserState = UserState.AdminMenu;
+                user.UserStateId = UserState.ADMIN_MENU;
                 await _botResponseService.SendAdminMainMenu(user.Id);
             }
             else
             {
                 await _botResponseService.SendMainMenuAsync(user.Id);
-                user.UserState = UserState.mainMenu;
+                user.UserStateId = UserState.MAIN_MENU;
             }
             await _userRepo.UpdateAsync(user);
         }

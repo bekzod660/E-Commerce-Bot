@@ -28,18 +28,18 @@ namespace E_Commerce_Bot.Services.Bot.Handlers
         {
             user = user.UserStateManager();
             await _userRepo.UpdateAsync(user);
-            Task res = user.UserState switch
+            Task res = user.UserStateId switch
             {
-                Enums.UserState.inCategory => _botResponseService.SendMainMenuAsync(user.Id),
-                Enums.UserState.inSettings => _botResponseService.SendMainMenuAsync(user.Id),
-                Enums.UserState.inDelivery => _botResponseService.SendMainMenuAsync(user.Id),
-                Enums.UserState.inPaymentProcess => _botResponseService.SendMainMenuAsync(user.Id),
-                Enums.UserState.inBasket => _botResponseService.SendCategoriesAsync(user.Id, user.Language),
-                Enums.UserState.fullName => _botResponseService.SendMainMenuAsync(user.Id),
-                Enums.UserState.onSelectPaymentType => _botResponseService.SendMainMenuAsync(user.Id),
-                Enums.UserState.onCommentOrder => _botResponseService.SendMainMenuAsync(user.Id),
-                Enums.UserState.amountRequest => _botResponseService.SendMainMenuAsync(user.Id),
-                Enums.UserState.atConfirmationOrder => _botResponseService.SendMainMenuAsync(user.Id),
+                2 => _botResponseService.SendMainMenuAsync(user.Id),
+                3 => _botResponseService.SendMainMenuAsync(user.Id),
+                4 => _botResponseService.SendMainMenuAsync(user.Id),
+                8 => _botResponseService.SendMainMenuAsync(user.Id),
+                9 => _botResponseService.SendCategoriesAsync(user.Id, user.Language),
+                10 => _botResponseService.SendMainMenuAsync(user.Id),
+                11 => _botResponseService.SendMainMenuAsync(user.Id),
+                12 => _botResponseService.SendMainMenuAsync(user.Id),
+                13 => _botResponseService.SendMainMenuAsync(user.Id),
+                14 => _botResponseService.SendMainMenuAsync(user.Id),
                 _ => _botResponseService.SendMainMenuAsync(user.Id)
             };
             await res;
