@@ -26,13 +26,13 @@ jobs:
           dotnet-version: '6.0.x'
           
       - name: Restore
-        run: dotnet restore ./CurrentTimeService.sln
+        run: dotnet restore ./E-Commerce-Bot.sln
         
       - name: Build
-        run: dotnet build ./CurrentTimeService.sln --configuration Release --no-restore
+        run: dotnet build ./E-Commerce-Bot.sln --configuration Release --no-restore
         
       - name: Publish
-        run: dotnet publish ./CurrentTimeService.sln --configuration Release --no-build --output './publish'
+        run: dotnet publish ./E-Commerce-Bot.sln --configuration Release --no-build --output './publish'
         
       - name: Setup SSH
         run: |
