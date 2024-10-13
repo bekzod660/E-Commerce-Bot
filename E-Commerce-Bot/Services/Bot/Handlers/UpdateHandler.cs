@@ -63,11 +63,11 @@ namespace E_Commerce_Bot.Services.Bot
                 await _userRepo.AddAsync(new User(
                      basket: new Entities.Basket(),
                      processHelper: new Entities.ProcessHelper(),
-                     orders: new HashSet<Order>() // Bo'sh to'plam yaratish
+                     orders: new HashSet<Order>()
                 )
                 {
                     Id = _user.Id,
-                    Name = _user.FirstName + " " + _user.LastName, // Bo'sh joy qo'shilishi uchun
+                    Name = _user.FirstName + " " + _user.LastName,
                     Language = _user.LanguageCode,
                     UserStateId = UserState.SEND_GREETING,
                 });

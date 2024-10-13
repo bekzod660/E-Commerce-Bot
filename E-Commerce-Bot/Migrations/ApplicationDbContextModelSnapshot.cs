@@ -120,7 +120,7 @@ namespace E_Commerce_Bot.Migrations
                     b.Property<double>("Longitute")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("OrderType")
+                    b.Property<int>("OrderTypeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("PaymentType")
@@ -157,7 +157,7 @@ namespace E_Commerce_Bot.Migrations
                     b.Property<double>("Longitute")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("OrderType")
+                    b.Property<int>("OrderTypeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("PaymentType")
@@ -257,7 +257,7 @@ namespace E_Commerce_Bot.Migrations
                     b.Property<int>("ProcessHelperId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserState")
+                    b.Property<int>("UserStateId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

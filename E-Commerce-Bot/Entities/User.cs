@@ -2,6 +2,12 @@
 {
     public class User
     {
+        public User()
+        {
+            Orders = new HashSet<Order>(); // Default qiymatni o'rnatish
+            Basket = new Basket();
+            ProcessHelper = new ProcessHelper();
+        }
         public User(Basket basket, ProcessHelper processHelper, HashSet<Order> orders)
         {
             this.Basket = basket;

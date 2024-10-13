@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace E_Commerce_Bot.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240904063511_Init1")]
-    partial class Init1
+    [Migration("20241012165153_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,7 +123,7 @@ namespace E_Commerce_Bot.Migrations
                     b.Property<double>("Longitute")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("OrderType")
+                    b.Property<int>("OrderTypeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("PaymentType")
@@ -160,7 +160,7 @@ namespace E_Commerce_Bot.Migrations
                     b.Property<double>("Longitute")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("OrderType")
+                    b.Property<int>("OrderTypeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("PaymentType")
@@ -260,7 +260,7 @@ namespace E_Commerce_Bot.Migrations
                     b.Property<int>("ProcessHelperId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserProcess")
+                    b.Property<int>("UserStateId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
